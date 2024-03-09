@@ -10,7 +10,7 @@ env = env.Clone()
 
 SHELL = ''
 if os.name == 'nt':
-    SHELL = 'cmd'
+    SHELL = 'SHELL=cmd'
 
 
 DIRECTORY = 'libsodium'
