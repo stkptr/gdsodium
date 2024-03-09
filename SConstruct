@@ -11,7 +11,7 @@ def validate_parent_dir(key, val, env):
         raise UserError("'%s' is not a directory: %s" % (key, os.path.dirname(val)))
 
 
-libname = "EXTENSION-NAME"
+libname = "gdsodium"
 projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
@@ -49,6 +49,8 @@ compilation_db = env.CompilationDatabase(
 env.Alias("compiledb", compilation_db)
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
+
+env = SConscript('libsodium.SConstruct', {'env': env})
 
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
