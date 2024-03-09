@@ -85,10 +85,7 @@ jobs:
           version: 12.2.0
       - name: Install Zig for Windows
         if: ${{ matrix.platform == 'windows' }}
-        run: |
-          curl -sL -o - https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz | tar xJ -f - -C /opt/
-          sudo mv /opt/zig-* /opt/zig
-          export PATH=/opt/zig:$PATH
+        run: choco install zig
 
       - name: Compile
         shell: sh
