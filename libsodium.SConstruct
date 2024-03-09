@@ -8,19 +8,19 @@ import urllib.request
 Import('env')
 env = env.Clone()
 
+SHELL = ''
+if os.name == 'nt':
+    SHELL = 'cmd'
+
 
 DIRECTORY = 'libsodium'
 CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
-MAKE = f'make -j{GetOption("num_jobs")}'
-CLEAN = 'make distclean'
+MAKE = f'make -j{GetOption("num_jobs")} {SHELL}'
+CLEAN = f'make distclean {SHELL}'
 
 SOURCE_EXT = ['c', 'h']
 TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.a'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
-
-
-if os.name == 'nt':
-    env['ENV']['SHELL'] = 'cmd.exe'
 
 
 def recursive_glob_ext(base, exts):
