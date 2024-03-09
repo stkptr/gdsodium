@@ -84,13 +84,7 @@ jobs:
         with:
           version: 12.2.0
 
-      - name: Compile godot-cpp
-        shell: sh
-        run: |
-          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
-        working-directory: godot-cpp
-
-      - name: Compile Extension
+      - name: Compile
         shell: sh
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
