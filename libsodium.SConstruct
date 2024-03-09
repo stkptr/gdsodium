@@ -10,7 +10,7 @@ env = env.Clone()
 
 
 DIRECTORY = 'libsodium'
-CONFIGURE = './configure --with-pic --disable-pie --enable-static'
+CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
 MAKE = f'make -j{GetOption("num_jobs")}'
 CLEAN = 'make distclean'
 
