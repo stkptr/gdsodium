@@ -9,18 +9,34 @@ Import('env')
 env = env.Clone()
 
 
+USE_ZIG = os.name == 'nt'
+
+
 DIRECTORY = 'libsodium'
 CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
 MAKE = f'make -j{GetOption("num_jobs")}'
-CLEAN = f'make distclean'
-
-if os.name == 'nt':
-    CONFIGURE = 'echo'
-    MAKE = 'zig build'
+CLEAN = 'make distclean'
 
 SOURCE_EXT = ['c', 'h']
 TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.a'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
+
+if USE_ZIG:
+    CONFIGURE = 'echo'
+    MAKE = 'zig build -Dstatic=true -Dshared=false -Doptimize=ReleaseFast'
+    CLEAN = 'rm -rf zig-out zig-cache'
+    TARGET = f'{DIRECTORY}/zig-out/lib/libsodium.a'
+    INCLUDE = f'{DIRECTORY}/zig-out/include'
+
+
+def copy_into_env(env, var, default=''):
+    if var in os.environ:
+        env['ENV'][var] = os.environ[var]
+    elif default:
+        env['ENV'][var] = default
+
+copy_into_env(env, 'ZIG_LOCAL_CACHE_DIR', 'zig-cache')
+copy_into_env(env, 'ZIG_GLOBAL_CACHE_DIR', 'zig-cache')
 
 
 def recursive_glob_ext(base, exts):
