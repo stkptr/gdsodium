@@ -8,15 +8,15 @@ import urllib.request
 Import('env')
 env = env.Clone()
 
-SHELL = ''
-if os.name == 'nt':
-    SHELL = 'SHELL=cmd'
-
 
 DIRECTORY = 'libsodium'
 CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
-MAKE = f'make -j{GetOption("num_jobs")} {SHELL}'
-CLEAN = f'make distclean {SHELL}'
+MAKE = f'make -j{GetOption("num_jobs")}'
+CLEAN = f'make distclean'
+
+if os.name == 'nt':
+    CONFIGURE = 'echo'
+    MAKE = 'zig build'
 
 SOURCE_EXT = ['c', 'h']
 TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.a'
