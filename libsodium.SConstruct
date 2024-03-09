@@ -19,6 +19,10 @@ TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.a'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
 
 
+if os.name == 'nt':
+    env['ENV']['SHELL'] = 'cmd.exe'
+
+
 def recursive_glob_ext(base, exts):
     files = []
     for root, dirnames, filenames in os.walk(base):
