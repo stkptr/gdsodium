@@ -1,6 +1,3 @@
-/libs/*
-!/libs/.gitkeep
-
 # Godot 4+ specific ignores
 .godot/
 

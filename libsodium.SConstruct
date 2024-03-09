@@ -2,18 +2,17 @@
 
 import os
 import fnmatch
+import tarfile
+import urllib.request
 
 Import('env')
 env = env.Clone()
 
-DIRECTORY = 'libs/libsodium/'
+
+DIRECTORY = 'libsodium'
 CONFIGURE = './configure --with-pic --disable-pie --enable-static'
 MAKE = f'make -j{GetOption("num_jobs")}'
 CLEAN = 'make distclean'
-
-url_base = 'https://download.libsodium.org/libsodium/releases'
-version = '1.0.19-stable'
-URL = f'{url_base}/libsodium-{version}.tar.gz'
 
 SOURCE_EXT = ['c', 'h']
 TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.a'
