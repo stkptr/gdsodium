@@ -12,21 +12,24 @@ env = env.Clone()
 USE_ZIG = os.name == 'nt'
 EXT = 'lib' if os.name == 'nt' else 'a'
 
-
+NAME = 'sodium'
 DIRECTORY = 'libsodium'
+LIBNAME = NAME if os.name == 'nt' else f'lib{NAME}'
+LIBFILE = f'{LIBNAME}.{EXT}'
+
 CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
 MAKE = f'make -j{GetOption("num_jobs")}'
 CLEAN = 'make distclean'
 
 SOURCE_EXT = ['c', 'h']
-TARGET = f'{DIRECTORY}/src/libsodium/.libs/libsodium.{EXT}'
+TARGET = f'{DIRECTORY}/src/libsodium/.libs/{LIBFILE}'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
 
 if USE_ZIG:
     CONFIGURE = 'echo'
     MAKE = 'zig build -Dstatic=true -Dshared=false -Doptimize=ReleaseFast'
     CLEAN = 'rm -rf zig-out zig-cache'
-    TARGET = f'{DIRECTORY}/zig-out/lib/libsodium.{EXT}'
+    TARGET = f'{DIRECTORY}/zig-out/lib/{LIBFILE}'
     INCLUDE = f'{DIRECTORY}/zig-out/include'
 
 
