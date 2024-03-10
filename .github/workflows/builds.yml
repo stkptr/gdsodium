@@ -88,9 +88,15 @@ jobs:
         run: choco install zig
 
       - name: Compile
+        if: ${{ matrix.platform != 'windows' }}
         shell: sh
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
+      - name: Compile (Windows)
+        if: ${{ matrix.platform == 'windows' }}
+        shell: sh
+        run: |
+          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }} use_mingw=true'
       - name: Delete compilation files
         if: ${{ matrix.platform == 'windows' }}
         run: |
