@@ -18,14 +18,16 @@ jobs:
       matrix:
         include:
           - identifier: windows-debug
-            os: windows-latest
+            os: ubuntu-latest
             name: 🏁 Windows Debug
+            runner: ubuntu-20.04
             target: template_debug
             platform: windows
             arch: x86_64
           - identifier: windows-release
-            os: windows-latest
+            os: ubuntu-latest
             name: 🏁 Windows Release
+            runner: ubuntu-20.04
             target: template_release
             platform: windows
             arch: x86_64
@@ -73,39 +75,25 @@ jobs:
           python -c "import sys; print(sys.version)"
           python -m pip install scons
           scons --version
-      - name: Linux dependencies
-        if: ${{ matrix.platform == 'linux' }}
+      - name: Linux base dependencies
+        if: ${{ matrix.platform == 'linux' || matrix.platform == 'windows' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qqq build-essential pkg-config
       - name: Setup MinGW for Windows/MinGW build
         if: ${{ matrix.platform == 'windows' }}
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          version: 12.2.0
+        run: |
+          sudo apt-get install -qqq mingw-w64
       - name: Install Zig for Windows
         if: ${{ matrix.platform == 'windows' }}
-        run: choco install zig
+        run: |
+          curl -sL -o - https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz | tar xJ -f - -C /opt/
+          sudo mv /opt/zig-* /opt/zig
 
       - name: Compile
-        if: ${{ matrix.platform != 'windows' }}
         shell: sh
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
-      - name: Compile libsodium (Windows)
-        if: ${{ matrix.platform == 'windows' }}
-        shell: sh
-        run: |
-          cd libsodium && zig build -Dstatic=true -Dshared=false -Doptimize=ReleaseFast
-      - name: Compile (Windows)
-        if: ${{ matrix.platform == 'windows' }}
-        shell: sh
-        run: |
-          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' use_mingw=true
-      - name: Delete compilation files
-        if: ${{ matrix.platform == 'windows' }}
-        run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
