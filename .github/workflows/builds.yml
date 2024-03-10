@@ -92,6 +92,11 @@ jobs:
         shell: sh
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
+      - name: Compile libsodium (Windows)
+        if: ${{ matrix.platform == 'windows' }}
+        shell: sh
+        run: |
+          cd libsodium && zig build -Dstatic=true -Dshared=false -Doptimize=ReleaseFast
       - name: Compile (Windows)
         if: ${{ matrix.platform == 'windows' }}
         shell: sh
