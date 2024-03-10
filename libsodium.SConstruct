@@ -11,18 +11,18 @@ env = env.Clone()
 
 
 if sys.platform.startswith('linux'):
-    PLATFORM = 'linux'
+    DEFAULT_PLATFORM = 'linux'
 elif sys.platform.startswith('win32'):
-    PLATFORM = 'windows'
+    DEFAULT_PLATFORM = 'windows'
 elif sys.platform.startswith('darwin'):
-    PLATFORM = 'macos'
+    DEFAULT_PLATFORM = 'macos'
 
 
-PLATFORM = ARGUMENTS.get('platform', PLATFORM)
+PLATFORM = ARGUMENTS.get('platform', DEFAULT_PLATFORM)
 ARCH = ARGUMENTS.get('arch', 'x86_64')
 
 
-USE_ZIG = {'platform', 'arch'} & set(ARGUMENTS.keys()) or PLATFORM == 'windows'
+USE_ZIG = PLATFORM == DEFAULT_PLATFORM or PLATFORM == 'windows'
 EXT = 'lib' if PLATFORM == 'windows' else 'a'
 
 NAME = 'sodium'
