@@ -1,5 +1,6 @@
 #include "gdsodium.h"
 #include <godot_cpp/core/class_db.hpp>
+#define SODIUM_STATIC
 #include <sodium.h>
 
 using namespace godot;
