@@ -4,30 +4,48 @@ import os
 import fnmatch
 import tarfile
 import urllib.request
+import sys
 
 Import('env')
 env = env.Clone()
 
 
-USE_ZIG = os.name == 'nt'
-EXT = 'lib' if os.name == 'nt' else 'a'
+if sys.platform.startswith('linux'):
+    PLATFORM = 'linux'
+elif sys.platform.startswith('win32'):
+    PLATFORM = 'windows'
+elif sys.platform.startswith('darwin'):
+    PLATFORM = 'macos'
+
+
+PLATFORM = ARGUMENTS.get('platform', PLATFORM)
+ARCH = ARGUMENTS.get('arch', 'x86_64')
+
+
+USE_ZIG = {'platform', 'arch'} & set(ARGUMENTS.keys()) or PLATFORM == 'windows'
+EXT = 'lib' if PLATFORM == 'windows' else 'a'
 
 NAME = 'sodium'
 DIRECTORY = 'libsodium'
-LIBNAME = NAME if os.name == 'nt' else f'lib{NAME}'
+LIBNAME = NAME if PLATFORM == 'windows' else f'lib{NAME}'
 LIBFILE = f'{LIBNAME}.{EXT}'
+
+SOURCE_EXT = ['c', 'h']
 
 CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
 MAKE = f'make -j{GetOption("num_jobs")}'
 CLEAN = 'make distclean'
 
-SOURCE_EXT = ['c', 'h']
 TARGET = f'{DIRECTORY}/src/libsodium/.libs/{LIBFILE}'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
 
 if USE_ZIG:
     CONFIGURE = 'echo'
-    MAKE = 'zig build -Dstatic=true -Dshared=false -Doptimize=ReleaseFast'
+    arch = 'aarch64' if ARCH == 'arm64' else ARCH
+    platform = 'windows-gnu' if PLATFORM == 'windows' else PLATFORM
+    DTARGET = f'-Dtarget={arch}-{platform}'
+    selected = '-Dstatic=true -Dshared=false -Dtest=false'
+    MAKE = f'zig build {DTARGET} {selected} -Doptimize=ReleaseFast'
     CLEAN = 'rm -rf zig-out zig-cache'
     TARGET = f'{DIRECTORY}/zig-out/lib/{LIBFILE}'
     INCLUDE = f'{DIRECTORY}/zig-out/include'
