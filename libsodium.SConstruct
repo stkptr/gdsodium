@@ -22,7 +22,7 @@ PLATFORM = ARGUMENTS.get('platform', DEFAULT_PLATFORM)
 ARCH = ARGUMENTS.get('arch', 'x86_64')
 
 
-USE_ZIG = PLATFORM == DEFAULT_PLATFORM or PLATFORM == 'windows'
+USE_ZIG = PLATFORM != DEFAULT_PLATFORM or PLATFORM == 'windows'
 EXT = 'lib' if PLATFORM == 'windows' else 'a'
 
 NAME = 'sodium'
