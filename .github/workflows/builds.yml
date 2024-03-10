@@ -96,7 +96,7 @@ jobs:
         if: ${{ matrix.platform == 'windows' }}
         shell: sh
         run: |
-          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }} use_mingw=true'
+          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' use_mingw=true
       - name: Delete compilation files
         if: ${{ matrix.platform == 'windows' }}
         run: |
