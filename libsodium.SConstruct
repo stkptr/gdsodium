@@ -22,8 +22,13 @@ PLATFORM = ARGUMENTS.get('platform', DEFAULT_PLATFORM)
 ARCH = ARGUMENTS.get('arch', 'x86_64')
 
 
-USE_ZIG = PLATFORM != DEFAULT_PLATFORM or PLATFORM == 'windows'
+USE_ZIG = (
+    (PLATFORM != DEFAULT_PLATFORM and PLATFORM != 'android')
+    or PLATFORM == 'windows'
+)
 EXT = 'lib' if PLATFORM == 'windows' else 'a'
+
+NOOP = 'echo'
 
 NAME = 'sodium'
 DIRECTORY = 'libsodium'
@@ -40,7 +45,7 @@ TARGET = f'{DIRECTORY}/src/libsodium/.libs/{LIBFILE}'
 INCLUDE = f'{DIRECTORY}/src/libsodium/include'
 
 if USE_ZIG:
-    CONFIGURE = 'echo'
+    CONFIGURE = NOOP
     arch = 'aarch64' if ARCH == 'arm64' else ARCH
     platform = 'windows-gnu' if PLATFORM == 'windows' else PLATFORM
     DTARGET = f'-Dtarget={arch}-{platform}'
@@ -49,6 +54,16 @@ if USE_ZIG:
     CLEAN = 'rm -rf zig-out zig-cache'
     TARGET = f'{DIRECTORY}/zig-out/lib/{LIBFILE}'
     INCLUDE = f'{DIRECTORY}/zig-out/include'
+
+if PLATFORM == 'android':
+    archmap = {
+        'arm32': 'armv7-a',
+        'arm64': 'armv8-a',
+        'x86_32': 'x86',
+        'x86_64': 'x86_64',
+    }
+    CONFIGURE = f'sh dist-build/android-{archmap[ARCH]}.sh'
+    MAKE = NOOP
 
 
 def copy_into_env(env, var, default=''):
@@ -59,6 +74,7 @@ def copy_into_env(env, var, default=''):
 
 copy_into_env(env, 'ZIG_LOCAL_CACHE_DIR', 'zig-cache')
 copy_into_env(env, 'ZIG_GLOBAL_CACHE_DIR', 'zig-cache')
+copy_into_env(env, 'ANDROID_NDK_HOME')
 
 
 def recursive_glob_ext(base, exts):
