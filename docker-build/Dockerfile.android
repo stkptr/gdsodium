@@ -24,7 +24,7 @@ RUN sdkmanager --sdk_root=${ANDROID_HOME} \
 
 RUN pip install --break-system-packages scons
 
-COPY .. extension
+COPY . extension
 
 WORKDIR extension
 RUN scons platform=android target=template_release arch=arm64
