@@ -10,6 +10,16 @@ config_version=5
 
 [application]
 
-config/name="godot cpp template"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/name="GDSodium Demo"
+run/main_scene="res://password_hash.tscn"
+config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[display]
+
+window/handheld/orientation=6
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
