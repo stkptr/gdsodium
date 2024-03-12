@@ -1,4 +1,4 @@
-FROM debian:12.5 AS build
+FROM debian:12.5
 
 RUN apt update
 RUN apt install -y build-essential python3-pip wget unzip openjdk-17-jdk
@@ -14,28 +14,15 @@ RUN wget -O cli.zip "https://dl.google.com/android/repository/${SDK_FILE}"
 RUN unzip cli.zip
 ENV ANDROID_HOME /cmdline-tools
 ENV ANDROID_NDK_HOME ${ANDROID_HOME}/ndk/${NDK_VERSION}/
+
 ENV PATH "${ANDROID_HOME}/bin:${PATH}"
 
 RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses
 RUN sdkmanager --sdk_root=${ANDROID_HOME} \
      "ndk;${NDK_VERSION}" "cmdline-tools;${CMDLINE_TOOLS_VERSION}" \
      "build-tools;${BUILD_TOOLS_VERSION}" "platforms;${PLATFORMS_VERSION}" \
-     "cmake;${CMAKE_VERSION}"
+     "cmake;${CMAKE_VERSION}" "platform-tools"
 
 RUN pip install --break-system-packages scons
 
-COPY . extension
-
-WORKDIR extension
-RUN scons platform=android target=template_release arch=arm64
-RUN scons platform=android target=template_release arch=arm32
-RUN scons platform=android target=template_release arch=x86_32
-RUN scons platform=android target=template_release arch=x86_64
-RUN scons platform=android target=template_debug arch=arm64
-RUN scons platform=android target=template_debug arch=arm32
-RUN scons platform=android target=template_debug arch=x86_32
-RUN scons platform=android target=template_debug arch=x86_64
-
-
-FROM scratch AS binaries
-COPY --from=build /extension/bin/android/* /
+CMD ["bash"]

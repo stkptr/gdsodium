@@ -1,0 +1,21 @@
+FROM androidsdk
+
+ENV GDFILE 4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
+ENV TEMPLATES 4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
+
+ENV GDBASE https://github.com/godotengine/godot/releases/download/
+RUN wget -O godot.zip "${GDBASE}/${GDFILE}"
+RUN unzip godot.zip
+RUN mv Godot_* godot
+RUN wget -O templates.zip "${GDBASE}/${TEMPLATES}"
+RUN unzip templates.zip
+
+ENV GODOT_ANDROID_KEYSTORE_DEBUG_USER androiddebugkey
+ENV GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD android
+ENV GODOT_ANDROID_KEYSTORE_RELEASE_USER androidreleasekey
+ENV GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD android
+
+ENV GODOT_ANDROID_KEYSTORE_DEBUG_PATH /keystores/debug.keystore
+ENV GODOT_ANDROID_KEYSTORE_RELEASE_PATH /keystores/release.keystore
+
+CMD ["bash"]

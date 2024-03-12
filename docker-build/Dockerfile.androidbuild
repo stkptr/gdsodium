@@ -1,0 +1,17 @@
+FROM androidsdk AS build
+
+COPY . extension
+
+WORKDIR extension
+RUN scons platform=android target=template_release arch=arm64
+RUN scons platform=android target=template_release arch=arm32
+RUN scons platform=android target=template_release arch=x86_32
+RUN scons platform=android target=template_release arch=x86_64
+RUN scons platform=android target=template_debug arch=arm64
+RUN scons platform=android target=template_debug arch=arm32
+RUN scons platform=android target=template_debug arch=x86_32
+RUN scons platform=android target=template_debug arch=x86_64
+
+
+FROM scratch AS binaries
+COPY --from=build /extension/bin/android/* /
