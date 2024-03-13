@@ -1,3 +1,21 @@
-/.*
-/docker-build
-/bin
+# Hidden files/directories
+.*
+
+# Binaries
+*.a
+*.o
+*.os
+*.so
+*.obj
+*.bc
+*.pyc
+*.dblite
+*.pdb
+*.lib
+*.config
+*.creator
+*.creator.user
+*.files
+*.includes
+*.idb
+*.exp
