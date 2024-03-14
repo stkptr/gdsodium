@@ -1,4 +1,4 @@
-FROM debgd:latest
+FROM gdsodium-debian:latest
 
 RUN apt update \
     && apt install -y openjdk-17-jdk \

@@ -5,10 +5,27 @@ import fnmatch
 import tarfile
 import urllib.request
 import sys
+import platform
 
 Import('env')
 env = env.Clone()
 
+Import('customs')
+opts = Variables(customs, ARGUMENTS)
+opts.Add(
+    BoolVariable(
+        key='sodium_use_zig',
+        help='Use Zig for compiling libsodium instead of autotools.',
+        default=False
+    )
+)
+opts.Add(
+    key='sodium_configure',
+    help='Custom arguments for ./configure',
+    default=''
+)
+opts.Update(env)
+Help(opts.GenerateHelpText(env))
 
 if sys.platform.startswith('linux'):
     DEFAULT_PLATFORM = 'linux'
@@ -17,15 +34,13 @@ elif sys.platform.startswith('win32'):
 elif sys.platform.startswith('darwin'):
     DEFAULT_PLATFORM = 'macos'
 
+DEFAULT_ARCH = platform.uname()[-2]
 
 PLATFORM = ARGUMENTS.get('platform', DEFAULT_PLATFORM)
-ARCH = ARGUMENTS.get('arch', 'x86_64')
+ARCH = ARGUMENTS.get('arch', DEFAULT_ARCH)
 
+USE_ZIG = ARGUMENTS.get('sodium_use_zig') == 'yes'
 
-USE_ZIG = (
-    (PLATFORM != DEFAULT_PLATFORM and PLATFORM != 'android')
-    or PLATFORM == 'windows'
-)
 EXT = 'lib' if PLATFORM == 'windows' else 'a'
 
 NOOP = 'echo'
@@ -37,7 +52,14 @@ LIBFILE = f'{LIBNAME}.{EXT}'
 
 SOURCE_EXT = ['c', 'h']
 
-CONFIGURE = 'sh configure --with-pic --disable-pie --enable-static'
+SODIUM_CONFIGURE = ARGUMENTS.get('sodium_configure', '')
+
+CONFIGURE = (
+    'sh configure'
+    ' --with-pic --disable-pie'
+    ' --enable-static=yes --enable-shared=no'
+    f' {SODIUM_CONFIGURE}'
+)
 MAKE = f'make -j{GetOption("num_jobs")}'
 CLEAN = 'make distclean'
 
@@ -46,7 +68,15 @@ INCLUDE = f'{DIRECTORY}/src/libsodium/include'
 
 if USE_ZIG:
     CONFIGURE = NOOP
-    arch = 'aarch64' if ARCH == 'arm64' else ARCH
+    # zig targets
+    archmap = {
+        'x86_32': 'x86',
+        'arm32': 'arm',
+        'arm64': 'aarch64',
+        'rv32': 'riscv32',
+        'rv64': 'riscv64',
+    }
+    arch = archmap.get(ARCH, ARCH)
     platform = 'windows-gnu' if PLATFORM == 'windows' else PLATFORM
     DTARGET = f'-Dtarget={arch}-{platform}'
     selected = '-Dstatic=true -Dshared=false -Dtest=false'

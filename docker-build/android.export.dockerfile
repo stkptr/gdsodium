@@ -1,4 +1,4 @@
-FROM androidgd:latest AS export
+FROM gdsodium-android:latest AS export
 
 COPY docker-build/templates/android_*.apk /templates
 COPY demo /project
