@@ -6,14 +6,18 @@ GDExtension targeting Godot 4.2 and above.
 ## Supported architectures
 
 - Windows: `x86_32`, `x86_64`
-- Linux:  `x86_32`, `x86_64`, `arm64`, `ppc64`, `ppc32`
+- Linux:  `x86_32`, `x86_64`, `arm64`, `ppc32`, `ppc64`
 - Android: `arm32` (`armv7`), `arm64` (`armv8`/`aarch64`), `x86_32`, `x86_64`
 
 Other architectures and platforms should be supported, but they either haven't
 or can't be added to the [Docker buildsystem](/docker-build) so they are not
 included in releases.
 
-Further, only `x86_64` Linux and Windows, and `arm64` Android are tested.
+On Linux, `arm32` and `riscv64` compilation fails with Godot, so those platforms
+will not be supported until that issue is fixed. It's a threading-related issue.
+
+Further, only `x86_64` and `arm64` Linux, `x86_64` Windows, and
+`x86_64` and `arm64` Android are tested.
 
 
 ## Compiling
