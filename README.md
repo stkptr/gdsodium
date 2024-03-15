@@ -68,6 +68,5 @@ $ scons
 ```
 
 
-[macos]: https://docs.godotengine.org
-    /en/stable/contributing/development/compiling/compiling_for_macos.html
+[macos]: https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_for_macos.html
 [docker-insecure]: https://docs.docker.com/reference/dockerfile/#run---security
