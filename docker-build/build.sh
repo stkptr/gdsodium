@@ -23,7 +23,7 @@ if [ "$1" = distclean ]; then
     exit
 fi
 
-if [ "$1" == export ]; then
+if [ "$1" = export ]; then
     EXPORT=true
 fi
 
@@ -38,23 +38,29 @@ if [ ! -d templates ]; then
     unzip templates.zip
 fi
 
-buildx() {
+buildkit() {
     DOCKER_BUILDKIT=1 docker build $@
 }
 
 docker_build() {
-    buildx -t gdsodium-${1}:latest -f ${1}.base.dockerfile .
+    args="-t gdsodium-${1}:latest -f ${1}.base.dockerfile ${extra_args} ."
+    extra_args=""
+    if [ "${2}" = insecure ]; then
+        docker buildx build --allow security.insecure ${args}
+    else
+        buildkit ${args}
+    fi
 }
 
 gdbuild() {
     dir=${1%%-*}
-    buildx --output=../bin/${dir} --target=binaries \
+    buildkit --output=../bin/${dir} --target=binaries \
         -f ${1}.build.dockerfile .. \
     && cp ../bin/${dir}/* ../demo/bin/${dir}
 }
 
 gdexport() {
-    buildx \
+    buildkit \
         --output=../builds/${1} --target=binaries -f ${1}.export.dockerfile ..
 }
 
@@ -70,6 +76,8 @@ build_all() {
 
 docker_build debian
 docker_build zig
+docker_build darwin insecure
+docker_build xcode insecure
 
 build_all linux-x86
 build_all linux-cross

@@ -5,7 +5,9 @@ COPY libsodium /extension/libsodium
 COPY src /extension/src
 COPY *SConstruct /extension/
 
-COPY docker-build/*.sh /usr/local/bin
+COPY docker-build/cc.sh /usr/local/bin
+COPY docker-build/output.sh /usr/local/bin
+COPY docker-build/sconsbuild.sh /usr/local/bin
 RUN ln -s /usr/local/bin/cc.sh /usr/local/bin/g++
 
 WORKDIR /extension

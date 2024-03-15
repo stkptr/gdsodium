@@ -34,6 +34,11 @@ $ ./build.sh
 
 This compiles for all supported architectures, except macOS and iOS.
 The Docker buildsystem is structured with an x86_64 host in mind.
+Expect a build time of about 2 to 3 hours on an 8 core machine.
+
+The buildsystem has the basis for macOS and iOS development in place, but will
+not produce binaries at this point. Further, the system in place so far needs
+insecure mode enabled. See [here][docker-insecure] for more info.
 
 ### SCons
 
@@ -65,3 +70,4 @@ $ scons
 
 [macos]: https://docs.godotengine.org
     /en/stable/contributing/development/compiling/compiling_for_macos.html
+[docker-insecure]: https://docs.docker.com/reference/dockerfile/#run---security
