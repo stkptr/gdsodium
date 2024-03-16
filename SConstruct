@@ -48,9 +48,9 @@ compilation_db = env.CompilationDatabase(
 )
 env.Alias("compiledb", compilation_db)
 
-env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
-
 env = SConscript('libsodium.SConstruct', {'env': env, 'customs': customs})
+
+env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")

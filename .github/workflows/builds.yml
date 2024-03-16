@@ -24,12 +24,14 @@ jobs:
             target: template_debug
             platform: windows
             arch: x86_64
+            compile_args: sodium_use_zig=yes
           - identifier: windows-release
             os: ubuntu-latest
             name: 🏁 Windows Release
             runner: ubuntu-22.04
             target: template_release
             platform: windows
+            compile_args: sodium_use_zig=yes
             arch: x86_64
           - identifier: macos-debug
             os: macos-latest
@@ -93,7 +95,7 @@ jobs:
       - name: Compile
         shell: sh
         run: |
-          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
+          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' ${{ matrix.compile_args }}
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
