@@ -20,6 +20,7 @@ void initialize_gdsodium_types(ModuleInitializationLevel p_level)
     ClassDB::register_class<GDSodiumKeyPair>();
     ClassDB::register_class<GDSodiumTaggedMessage>();
     ClassDB::register_class<GDSodiumDirectionalKeys>();
+    ClassDB::register_class<GDSodiumKeyExchange>();
 }
 
 void uninitialize_gdsodium_types(ModuleInitializationLevel p_level) {
