@@ -67,6 +67,9 @@ $ cd gdsodium
 $ scons
 ```
 
+If you're using Windows, or would like to build libsodium with Zig for any other
+reason, use `scons sodium_use_zig=yes` instead of just `scons`.
+
 
 [macos]: https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_for_macos.html
 [docker-insecure]: https://docs.docker.com/reference/dockerfile/#run---security
