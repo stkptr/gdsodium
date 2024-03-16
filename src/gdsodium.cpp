@@ -32,10 +32,10 @@ GDSodium::~GDSodium() {}
 
 
 Array GDSodium::chacha20_poly1305_ietf_encrypt_detached(
-    PackedByteArray message,
-    PackedByteArray key,
-    PackedByteArray nonce,
-    PackedByteArray associated_data
+    const PackedByteArray &message,
+    const PackedByteArray &key,
+    const PackedByteArray &nonce,
+    const PackedByteArray &associated_data
 ) {
     PackedByteArray ciphertext{};
     PackedByteArray mac{};
@@ -71,11 +71,11 @@ Array GDSodium::chacha20_poly1305_ietf_encrypt_detached(
 }
 
 PackedByteArray GDSodium::chacha20_poly1305_ietf_decrypt_detached(
-    PackedByteArray message,
-    PackedByteArray key,
-    PackedByteArray nonce,
-    PackedByteArray associated_data,
-    PackedByteArray mac
+    const PackedByteArray &message,
+    const PackedByteArray &key,
+    const PackedByteArray &nonce,
+    const PackedByteArray &associated_data,
+    const PackedByteArray &mac
 ) {
     PackedByteArray plaintext{};
     plaintext.resize(message.size());
@@ -101,8 +101,8 @@ PackedByteArray GDSodium::chacha20_poly1305_ietf_decrypt_detached(
 
 
 PackedByteArray GDSodium::argon2id_hash(
-    PackedByteArray secret,
-    PackedByteArray salt,
+    const PackedByteArray &secret,
+    const PackedByteArray &salt,
     uint64_t operations,
     uint64_t memory,
     uint32_t output_size
@@ -126,5 +126,3 @@ PackedByteArray GDSodium::argon2id_hash(
 
     return out;
 }
-
-
