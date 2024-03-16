@@ -5,17 +5,21 @@
 #include <godot_cpp/godot.hpp>
 #include <sodium.h>
 #include <gdsodium.h>
+#include <gdsodium_types.h>
+#include <key_exchange.h>
 
 using namespace godot;
 
 void initialize_gdsodium_types(ModuleInitializationLevel p_level)
 {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE || sodium_init() < 0) {
 		return;
 	}
-	if (sodium_init() >= 0) {
-	    ClassDB::register_class<GDSodium>();
-	}
+    ClassDB::register_class<GDSodium>();
+    ClassDB::register_abstract_class<GDSodiumType>();
+    ClassDB::register_class<GDSodiumKeyPair>();
+    ClassDB::register_class<GDSodiumTaggedMessage>();
+    ClassDB::register_class<GDSodiumDirectionalKeys>();
 }
 
 void uninitialize_gdsodium_types(ModuleInitializationLevel p_level) {

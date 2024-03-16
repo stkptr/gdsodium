@@ -55,6 +55,15 @@ env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
+env.Command(
+    'src/generated_datatypes.h', [
+        'src/dataclass_generate.py',
+        'src/dataclasses.json',
+    ], [
+        './src/dataclass_generate.py src/dataclasses.json > $TARGET'
+    ]
+)
+
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
 
 if env["platform"] == "macos":

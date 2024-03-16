@@ -1,6 +1,7 @@
 /keystores
 templates*
 experiment
+src/generated_datatypes.h
 
 # Godot 4+ specific ignores
 .godot/

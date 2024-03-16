@@ -1,0 +1,16 @@
+{
+    "GDSodiumKeyPair": {
+        "public_key": "Bytes",
+        "private_key": "Bytes"
+    },
+
+    "GDSodiumTaggedMessage": {
+        "message": "Bytes",
+        "tag": "Bytes"
+    },
+
+    "GDSodiumDirectionalKeys": {
+        "receive": "Bytes",
+        "transmit": "Bytes"
+    }
+}
