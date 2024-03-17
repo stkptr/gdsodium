@@ -3,8 +3,10 @@
 clean() {
     rm -rvf ../bin/android/*.so ../bin/windows/*.dll
     rm -rvf ../bin/linux/*.so ../bin/macos/lib*
+    rm -rvf ../bin/web/*.wasm
     rm -rvf ../demo/bin/android/*.so ../demo/bin/windows/*.dll
     rm -rvf ../demo/bin/linux/*.so ../demo/bin/macos/lib*
+    rm -rvf ../demo/bin/web/*.wasm
     rm -rvf ../build
 }
 
@@ -39,7 +41,7 @@ if [ ! -d templates ]; then
 fi
 
 buildkit() {
-    DOCKER_BUILDKIT=1 docker build $@
+    DOCKER_BUILDKIT=1 DOCKER_SCAN_SUGGEST=false docker build $@
 }
 
 docker_build() {
@@ -78,6 +80,7 @@ docker_build debian
 docker_build zig
 docker_build darwin insecure
 docker_build xcode insecure
+docker_build web
 
 build_all linux-x86
 build_all linux-cross
