@@ -15,8 +15,8 @@ RUN git clone --recursive --depth 1 https://github.com/darlinghq/darling.git \
     && mkdir darling/build
 
 WORKDIR /darling/build
-RUN cmake ..
-RUN make -j$(nproc) && make install
+RUN cmake .. && make -j$(nproc)
+RUN make install
 WORKDIR /
 RUN rm -rf darling
 
