@@ -14,10 +14,10 @@ bind_template = '''
 static void _bind_methods() {{
     ClassDB::bind_static_method(
         "{class_name}",
-        D_METHOD("new_init",
+        D_METHOD("create",
 {property_names}
         ),
-        &{class_name}::new_init
+        &{class_name}::create
     );
     {property_binds}
 }}
@@ -51,7 +51,7 @@ constructor_template = '''
 }}
 ~{class_name}() {{}}
 
-static {class_name}* new_init(
+static {class_name}* create(
 {property_params}
 ) {{
     return memnew({class_name}(

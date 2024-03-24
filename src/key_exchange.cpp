@@ -24,9 +24,6 @@ void GDSodiumKeyExchange::_bind_methods() {
             "server_keys", "client_public_key"),
         &GDSodiumKeyExchange::server_session_keys
     );
-    #define BIND_CONSTANT_AS(m_constant, m_name) \
-        godot::ClassDB::bind_integer_constant( \
-            get_class_static(), "", m_name, m_constant);
     BIND_CONSTANT_AS(crypto_kx_PUBLICKEYBYTES, "PUBLIC_KEY_BYTES");
     BIND_CONSTANT_AS(crypto_kx_SECRETKEYBYTES, "SECRET_KEY_BYTES");
     BIND_CONSTANT_AS(crypto_kx_SEEDBYTES, "SEED_BYTES");

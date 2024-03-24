@@ -4,4 +4,4 @@
 void initialize_gdsodium_types();
 void uninitialize_gdsodium_types();
 
-#endif // EXAMPLE_REGISTER_TYPES_H
+#endif // GDSODIUM_REGISTER_TYPES_H
