@@ -12,9 +12,9 @@ TypedName = namedtuple(
 
 bind_template = '''
 static void _bind_methods() {{
-    ClassDB::bind_static_method(
+    godot::ClassDB::bind_static_method(
         "{class_name}",
-        D_METHOD("create",
+        godot::D_METHOD("create",
 {property_names}
         ),
         &{class_name}::create
@@ -25,16 +25,16 @@ static void _bind_methods() {{
 
 
 bind_property_template = '''
-ClassDB::bind_method(
-    D_METHOD("get_{property_name}"),
+godot::ClassDB::bind_method(
+    godot::D_METHOD("get_{property_name}"),
     &{class_name}::get_{property_name}
 );
-ClassDB::bind_method(
-    D_METHOD("set_{property_name}"),
+godot::ClassDB::bind_method(
+    godot::D_METHOD("set_{property_name}"),
     &{class_name}::set_{property_name}
 );
 ADD_PROPERTY(
-    PropertyInfo({property_variant}, "{property_name}"),
+    godot::PropertyInfo({property_variant}, "{property_name}"),
     "set_{property_name}",
     "get_{property_name}"
 );
@@ -88,10 +88,10 @@ public:
 
 type_map = {
     'Bytes': [
-        'PackedByteArray',
-        'Variant::PACKED_BYTE_ARRAY',
-        'const PackedByteArray &',
-        'PackedByteArray()'
+        'godot::PackedByteArray',
+        'godot::Variant::PACKED_BYTE_ARRAY',
+        'const godot::PackedByteArray &',
+        'godot::PackedByteArray()'
     ]
 }
 

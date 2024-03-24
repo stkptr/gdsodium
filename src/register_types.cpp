@@ -9,6 +9,7 @@
 #include <key_exchange.h>
 
 using namespace godot;
+using namespace gdsodium;
 
 void initialize_gdsodium_types(ModuleInitializationLevel p_level)
 {

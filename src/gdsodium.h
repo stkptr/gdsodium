@@ -1,12 +1,14 @@
 #ifndef GDSODIUM_H
 #define GDSODIUM_H
 
+#include <gdsodium_common.h>
+
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 
-namespace godot {
+namespace gdsodium {
 
-class GDSodium : public Object {
+class GDSodium : public godot::Object {
 	GDCLASS(GDSodium, Object)
 
 protected:
@@ -16,24 +18,24 @@ public:
 	GDSodium();
 	~GDSodium();
 
-    static Array chacha20_poly1305_ietf_encrypt_detached(
-        const PackedByteArray &message,
-        const PackedByteArray &key,
-        const PackedByteArray &nonce,
-        const PackedByteArray &associated_data
+    static godot::Array chacha20_poly1305_ietf_encrypt_detached(
+        const Bytes &message,
+        const Bytes &key,
+        const Bytes &nonce,
+        const Bytes &associated_data
     );
 
-    static PackedByteArray chacha20_poly1305_ietf_decrypt_detached(
-        const PackedByteArray &message,
-        const PackedByteArray &key,
-        const PackedByteArray &nonce,
-        const PackedByteArray &associated_data,
-        const PackedByteArray &mac
+    static Bytes chacha20_poly1305_ietf_decrypt_detached(
+        const Bytes &message,
+        const Bytes &key,
+        const Bytes &nonce,
+        const Bytes &associated_data,
+        const Bytes &mac
     );
 
-    static PackedByteArray argon2id_hash(
-        const PackedByteArray &secret,
-        const PackedByteArray &salt,
+    static Bytes argon2id_hash(
+        const Bytes &secret,
+        const Bytes &salt,
         uint64_t operations,
         uint64_t memory,
         uint32_t output_size

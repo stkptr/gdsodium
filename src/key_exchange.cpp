@@ -4,6 +4,7 @@
 #include <sodium.h>
 
 using namespace godot;
+using namespace gdsodium;
 
 void GDSodiumKeyExchange::_bind_methods() {
     ClassDB::bind_static_method(

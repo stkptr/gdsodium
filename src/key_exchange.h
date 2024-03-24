@@ -5,10 +5,10 @@
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include "gdsodium_common.h"
 
-namespace godot {
+namespace gdsodium {
 
-class GDSodiumKeyExchange : public Object {
-	GDCLASS(GDSodiumKeyExchange, Object)
+class GDSodiumKeyExchange : public godot::Object {
+	GDCLASS(GDSodiumKeyExchange, godot::Object)
 
 protected:
 	static void _bind_methods();
@@ -17,18 +17,18 @@ public:
     GDSodiumKeyExchange() {}
     ~GDSodiumKeyExchange() {}
 
-    static Ref<GDSodiumKeyPair> generate_keypair(
-        const PackedByteArray &seed
+    static godot::Ref<GDSodiumKeyPair> generate_keypair(
+        const Bytes &seed
     );
 
-    static Ref<GDSodiumDirectionalKeys> client_session_keys(
-        Ref<GDSodiumKeyPair> client_keys,
-        const PackedByteArray &server_public_key
+    static godot::Ref<GDSodiumDirectionalKeys> client_session_keys(
+        godot::Ref<GDSodiumKeyPair> client_keys,
+        const Bytes &server_public_key
     );
 
-    static Ref<GDSodiumDirectionalKeys> server_session_keys(
-        Ref<GDSodiumKeyPair> server_keys,
-        const PackedByteArray &client_public_key
+    static godot::Ref<GDSodiumDirectionalKeys> server_session_keys(
+        godot::Ref<GDSodiumKeyPair> server_keys,
+        const Bytes &client_public_key
     );
 };
 
