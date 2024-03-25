@@ -11,13 +11,15 @@ void GDSodium::_bind_methods() {
         "GDSodium",
         D_METHOD("chacha20_poly1305_ietf_encrypt_detached",
             "message", "key", "nonce", "associated_data"),
-        &GDSodium::chacha20_poly1305_ietf_encrypt_detached
+        &GDSodium::chacha20_poly1305_ietf_encrypt_detached,
+        DEFVAL(PackedByteArray())
     );
     ClassDB::bind_static_method(
         "GDSodium",
         D_METHOD("chacha20_poly1305_ietf_decrypt_detached",
-            "ciphertext", "key", "nonce", "associated_data", "mac"),
-        &GDSodium::chacha20_poly1305_ietf_decrypt_detached
+            "ciphertext", "mac", "key", "nonce", "associated_data"),
+        &GDSodium::chacha20_poly1305_ietf_decrypt_detached,
+        DEFVAL(PackedByteArray())
     );
     ClassDB::bind_static_method(
         "GDSodium",
@@ -32,7 +34,7 @@ GDSodium::GDSodium() {}
 GDSodium::~GDSodium() {}
 
 
-Array GDSodium::chacha20_poly1305_ietf_encrypt_detached(
+godot::Ref<GDSodiumTaggedMessage> GDSodium::chacha20_poly1305_ietf_encrypt_detached(
     const PackedByteArray &message,
     const PackedByteArray &key,
     const PackedByteArray &nonce,
@@ -47,7 +49,7 @@ Array GDSodium::chacha20_poly1305_ietf_encrypt_detached(
     unsigned long long mlen;
     
     if (nonce.size() != 12 || key.size() != 32) {
-        return Array();
+        return EMPTY(GDSodiumTaggedMessage);
     }
 
     if (crypto_aead_chacha20poly1305_ietf_encrypt_detached(
@@ -58,31 +60,28 @@ Array GDSodium::chacha20_poly1305_ietf_encrypt_detached(
         NULL, nonce.ptr(),
         key.ptr()
     ) != 0) {
-        return Array();
+        return EMPTY(GDSodiumTaggedMessage);
     }
     
     if (mlen != 16) {
-        return Array();
+        return EMPTY(GDSodiumTaggedMessage);
     }
-    
-    Array output{};
-    output.push_back(Variant(ciphertext));
-    output.push_back(Variant(mac));
-    return output;
+
+    return memnew(GDSodiumTaggedMessage(ciphertext, mac));
 }
 
-PackedByteArray GDSodium::chacha20_poly1305_ietf_decrypt_detached(
+godot::Ref<GDSodiumValidatedMessage> GDSodium::chacha20_poly1305_ietf_decrypt_detached(
     const PackedByteArray &message,
+    const PackedByteArray &mac,
     const PackedByteArray &key,
     const PackedByteArray &nonce,
-    const PackedByteArray &associated_data,
-    const PackedByteArray &mac
+    const PackedByteArray &associated_data
 ) {
     PackedByteArray plaintext{};
     plaintext.resize(message.size());
     
     if (nonce.size() != 12 || key.size() != 32) {
-        return PackedByteArray();
+        return EMPTY(GDSodiumValidatedMessage);
     }
     
     if (crypto_aead_chacha20poly1305_ietf_decrypt_detached(
@@ -94,10 +93,10 @@ PackedByteArray GDSodium::chacha20_poly1305_ietf_decrypt_detached(
         nonce.ptr(),
         key.ptr()
     ) != 0) {
-        return PackedByteArray();
+        return EMPTY(GDSodiumValidatedMessage);
     }
 
-    return plaintext;
+    return memnew(GDSodiumValidatedMessage(plaintext, true));
 }
 
 

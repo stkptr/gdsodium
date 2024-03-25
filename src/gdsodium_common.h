@@ -9,6 +9,8 @@ namespace gdsodium {
     godot::ClassDB::bind_integer_constant( \
         get_class_static(), "", m_name, m_constant);
 
+#define EMPTY(class) memnew(class());
+
 typedef godot::PackedByteArray Bytes;
 
 }

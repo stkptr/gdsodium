@@ -12,5 +12,10 @@
     "GDSodiumDirectionalKeys": {
         "receive": "Bytes",
         "transmit": "Bytes"
+    },
+
+    "GDSodiumValidatedMessage": {
+        "message": "Bytes",
+        "valid": "bool"
     }
 }

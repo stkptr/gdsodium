@@ -61,7 +61,7 @@ static {class_name}* create(
 '''
 
 setter_template = '''
-void set_{property_name}({property_parameter_type}{property_name}) {{
+void set_{property_name}({property_parameter_type} {property_name}) {{
     this->{property_name} = {property_name};
 }}
 {property_return_type} get_{property_name}() const {{
@@ -92,6 +92,12 @@ type_map = {
         'godot::Variant::PACKED_BYTE_ARRAY',
         'const godot::PackedByteArray &',
         'godot::PackedByteArray()'
+    ],
+    'bool': [
+        'bool',
+        'godot::Variant::BOOL',
+        'bool',
+        'false'
     ]
 }
 
@@ -153,7 +159,7 @@ def generate_class(definition):
                 t.name for t in definition.members
             ])),
             property_params=indent(',\n'.join([
-                f'{t.parameter_type}{t.name}' for t in definition.members
+                f'{t.parameter_type} {t.name}' for t in definition.members
             ])),
             property_defaults=indent('\n'.join([
                 f'{t.name} = {t.default_value};'

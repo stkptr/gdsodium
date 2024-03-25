@@ -18,19 +18,23 @@ public:
 	GDSodium();
 	~GDSodium();
 
-    static godot::Array chacha20_poly1305_ietf_encrypt_detached(
+    static godot::Ref<GDSodiumTaggedMessage> chacha20_poly1305_ietf_encrypt_detached(
         const Bytes &message,
         const Bytes &key,
         const Bytes &nonce,
         const Bytes &associated_data
     );
 
-    static Bytes chacha20_poly1305_ietf_decrypt_detached(
+    static godot::Ref<GDSodiumValidatedMessage> chacha20_poly1305_ietf_decrypt_detached(
         const Bytes &message,
+        const Bytes &mac,
         const Bytes &key,
         const Bytes &nonce,
-        const Bytes &associated_data,
-        const Bytes &mac
+        const Bytes &associated_data
+    );
+
+    static int variant_check(
+        godot::Variant a
     );
 
     static Bytes argon2id_hash(
