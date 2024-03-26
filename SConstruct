@@ -13,6 +13,7 @@ def validate_parent_dir(key, val, env):
 
 libname = "gdsodium"
 projectdir = "demo"
+testdir = "test"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -70,15 +71,15 @@ if env["platform"] == "macos":
     platlibname = "{}.{}.{}".format(libname, env["platform"], env["target"])
     file = "{}.framework/{}".format(env["platform"], platlibname, platlibname)
 
-libraryfile = "bin/{}/{}".format(env["platform"], file)
+libraryfile = "extension/{}/{}".format(env["platform"], file)
 library = env.SharedLibrary(
     libraryfile,
     source=sources,
 )
 
-copy = env.InstallAs("{}/bin/{}/lib{}".format(projectdir, env["platform"], file), library)
+copy_demo = env.InstallAs('demo/bin', 'extension')
 
-default_args = [library, copy]
+default_args = [library, copy_demo]
 if localEnv.get("compiledb", False):
     default_args += [compilation_db]
 Default(*default_args)

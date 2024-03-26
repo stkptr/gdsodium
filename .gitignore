@@ -4,23 +4,25 @@ experiment
 src/generated_datatypes.h
 
 # Godot 4+ specific ignores
-.godot/
+demo/.godot/*
+!demo/.godot/extension_list.cfg
 
 # Ignore library files but not the gdextension file
-demo/bin/*
-!demo/bin/android
-demo/bin/android/*
-!demo/bin/android/.gitkeep
-!demo/bin/linux
-demo/bin/linux/*
-!demo/bin/linux/.gitkeep
-!demo/bin/macos
-demo/bin/macos/*
-!demo/bin/macos/.gitkeep
-!demo/bin/windows
-demo/bin/windows/*
-!demo/bin/windows/.gitkeep
-!demo/bin/*.gdextension
+bin/
+extension/*
+!extension/android
+extension/android/*
+!extension/android/.gitkeep
+!extension/linux
+extension/linux/*
+!extension/linux/.gitkeep
+!extension/macos
+extension/macos/*
+!extension/macos/.gitkeep
+!extension/windows
+extension/windows/*
+!extension/windows/.gitkeep
+!extension/*.gdextension
 .sconsign*.dblite
 
 # Ignore custom.py

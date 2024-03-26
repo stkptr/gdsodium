@@ -1,12 +1,15 @@
 #!/bin/sh
 
+clean_in() {
+    rm -rvf "$1"/android/*.so "$1"/windows/*.dll
+    rm -rvf "$1"/linux/*.so "$1"/macos/lib*
+    rm -rvf "$1"/web/*.wasm
+}
+
 clean() {
-    rm -rvf ../bin/android/*.so ../bin/windows/*.dll
-    rm -rvf ../bin/linux/*.so ../bin/macos/lib*
-    rm -rvf ../bin/web/*.wasm
-    rm -rvf ../demo/bin/android/*.so ../demo/bin/windows/*.dll
-    rm -rvf ../demo/bin/linux/*.so ../demo/bin/macos/lib*
-    rm -rvf ../demo/bin/web/*.wasm
+    clean_in ../bin
+    rm -rf ../demo/bin
+    rm -rf ../test/bin
     rm -rvf ../build
 }
 
@@ -56,9 +59,9 @@ docker_build() {
 
 gdbuild() {
     dir=${1%%-*}
-    buildkit --output=../bin/${dir} --target=binaries \
+    buildkit --output=../extension/${dir} --target=binaries \
         -f ${1}.build.dockerfile .. \
-    && cp ../bin/${dir}/* ../demo/bin/${dir}
+    && cp -rn ../extension/${dir}/* ../demo/bin/${dir} ../test/bin/${dir}
 }
 
 gdexport() {
