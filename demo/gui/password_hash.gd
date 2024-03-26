@@ -15,6 +15,9 @@ func _ready():
 		$Widgets/Memory/Units.add_item(k)
 	$Widgets/Memory/Units.select(units.keys().find('mebibytes'))
 
+func test():
+	print('success')
+
 func _on_randomize_pressed():
 	var salt = crypto.generate_random_bytes(16)
 	$Widgets/Salt/Value.text = Marshalls.raw_to_base64(salt)
