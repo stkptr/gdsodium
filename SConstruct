@@ -13,7 +13,6 @@ def validate_parent_dir(key, val, env):
 
 libname = "gdsodium"
 projectdir = "demo"
-testdir = "test"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 

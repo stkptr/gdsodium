@@ -9,7 +9,6 @@ clean_in() {
 clean() {
     clean_in ../bin
     rm -rf ../demo/bin
-    rm -rf ../test/bin
     rm -rvf ../build
 }
 
@@ -61,7 +60,7 @@ gdbuild() {
     dir=${1%%-*}
     buildkit --output=../extension/${dir} --target=binaries \
         -f ${1}.build.dockerfile .. \
-    && cp -rn ../extension/${dir}/* ../demo/bin/${dir} ../test/bin/${dir}
+    && cp -rn ../extension/${dir}/* ../demo/bin/${dir}
 }
 
 gdexport() {
