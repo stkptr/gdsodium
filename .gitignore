@@ -6,6 +6,7 @@ src/generated_datatypes.h
 # Godot 4+ specific ignores
 demo/.godot/*
 !demo/.godot/extension_list.cfg
+!demo/.godot/global_script_class_cache.cfg
 
 # Ignore library files but not the gdextension file
 bin/
