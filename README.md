@@ -13,8 +13,8 @@ However, once GDSodium is stable head over to [releases] and grab the newest
 
 By using GDSodium you must agree to some licenses. GDSodium itself is public
 domain, but libsodium and GDExtension both have credit requirements.
-**You must** include the licenses for [godot-cpp](/godot-cpp/LICENSE.md) and
-[libsodium](/libsodium/LICENSE) in your final project. If your project is
+**You must** include the licenses for [godot-cpp][gdcpp-license] and
+[libsodium][libsodium-license] in your final project. If your project is
 graphical-only, you should have some menu option which shows a list of licenses,
 including the licenses for godot-cpp and libsodium.
 
@@ -87,5 +87,7 @@ reason, use `scons sodium_use_zig=yes` instead of just `scons`.
 
 
 [releases]: https://github.com/stkptr/gdsodium/releases
+[gdcpp-license]: https://github.com/godotengine/godot-cpp/blob/51c752c46b44769d3b6c661526c364a18ea64781/LICENSE.md
+[libsodium-license]: https://github.com/jedisct1/libsodium/blob/fb4533b0a941b3a5b1db5687d1b008a5853d1f29/LICENSE
 [macos]: https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_for_macos.html
 [docker-insecure]: https://docs.docker.com/reference/dockerfile/#run---security
