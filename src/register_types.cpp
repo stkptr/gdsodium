@@ -3,10 +3,13 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
+
 #include <sodium.h>
+
 #include <gdsodium.h>
 #include <gdsodium_types.h>
 #include <key_exchange.h>
+#include <sign.h>
 
 using namespace godot;
 using namespace gdsodium;
@@ -23,6 +26,7 @@ void initialize_gdsodium_types(ModuleInitializationLevel p_level)
     ClassDB::register_class<GDSodiumValidatedMessage>();
     ClassDB::register_class<GDSodiumDirectionalKeys>();
     ClassDB::register_class<GDSodiumKeyExchange>();
+    ClassDB::register_class<GDSodiumSign>();
 }
 
 void uninitialize_gdsodium_types(ModuleInitializationLevel p_level) {

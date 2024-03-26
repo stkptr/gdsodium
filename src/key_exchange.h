@@ -1,8 +1,7 @@
-#ifndef KEY_EXCHANGE_H
-#define KEY_EXCHANGE_H
+#ifndef GDSODIUM_KEY_EXCHANGE_H
+#define GDSODIUM_KEY_EXCHANGE_H
 
 #include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/variant/packed_byte_array.hpp>
 #include "gdsodium_common.h"
 
 namespace gdsodium {
@@ -34,4 +33,4 @@ public:
 
 }
 
-#endif // KEY_EXCHANGE_H
+#endif // GDSODIUM_KEY_EXCHANGE_H
