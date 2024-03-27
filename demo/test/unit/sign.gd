@@ -1,113 +1,56 @@
-extends UnitTest
+extends GutTest
 
 func test_generate():
 	var kp = GDSodiumSign.generate_keypair()
 	assert_false(kp.private_key.is_empty() or kp.public_key.is_empty())
 
-func generate_case():
-	var kp = GDSodiumSign.generate_keypair()
-	var crypto = Crypto.new()
-	var message = crypto.generate_random_bytes(32)
-	var message2 = crypto.generate_random_bytes(32)
+func test_generate_seed(case=use_parameters(sign_sets)):
+	var kp = GDSodiumSign.generate_keypair(case.seed)
+	assert_eq(kp.private_key, case.private_key)
+	assert_eq(kp.public_key, case.public_key)
+
+func test_private_key_to_seed(case=use_parameters(sign_sets)):
+	var seed = GDSodiumSign.private_key_to_seed(case.private_key)
+	assert_eq(seed, case.seed)
+
+func test_private_key_to_public_key(case=use_parameters(sign_sets)):
+	var pk = GDSodiumSign.private_key_to_public_key(case.private_key)
+	assert_eq(pk, case.public_key)
+
+func test_sign_detached(case=use_parameters(sign_sets)):
+	var signature = GDSodiumSign.sign_detached(case.message, case.private_key)
+	assert_eq(signature, case.signature)
+
+func test_sign(case=use_parameters(sign_sets)):
+	var sig = GDSodiumSign.sign(case.message, case.private_key)
+	assert_eq(sig, case.signature + case.message)
+
+func test_verify_detached(case=use_parameters(sign_sets)):
+	assert_true(GDSodiumSign.verify_detached(
+	    case.message, case.signature, case.public_key))
+
+func test_open(case=use_parameters(sign_sets)):
+	var message = GDSodiumSign.open(
+		case.signature + case.message, case.public_key)
+	assert_true(message.valid)
+	assert_eq(message.message, case.message)
+
+func test_sign_multipart(case=use_parameters(sign_sets)):
 	var signer = GDSodiumSign.new()
-	signer.update(message)
-	signer.update(message2)
-	return SigSet.new([
-		GDSodiumSign.private_key_to_seed(kp.private_key),
-		kp.private_key,
-		kp.public_key,
-		message,
-		GDSodiumSign.sign_detached(message, kp.private_key),
-		message2,
-		signer.final_sign(kp.private_key)
-	])
+	signer.update(case.message)
+	signer.update(case.message2)
+	assert_eq(signer.final_sign(case.private_key), case.signature2)
 
-func run_sign(f: Callable):
-	var fixed = run_cases(
-		f,
-		sign_sets
-	)
-	var random = run_cases(
-		f,
-		range(10).map(func(a): return generate_case())
-	)
-	return fixed and random
-
-func test_generate_seed():
-	return run_sign(
-		func(case):
-			var kp = GDSodiumSign.generate_keypair(case.seed)
-			return (kp.private_key == case.private_key
-				and kp.public_key == case.public_key)
-	)
-
-func test_private_key_to_seed():
-	return run_sign(
-		func(case):
-			var seed = GDSodiumSign.private_key_to_seed(case.private_key)
-			return seed == case.seed
-	)
-
-func test_private_key_to_public_key():
-	return run_sign(
-		func(case):
-			var pk = GDSodiumSign.private_key_to_public_key(case.private_key)
-			return pk == case.public_key
-	)
-
-func test_sign_detached():
-	return run_sign(
-		func(case):
-			var sig = GDSodiumSign.sign_detached(
-				case.message, case.private_key)
-			return sig == case.signature
-	)
-
-func test_sign():
-	return run_sign(
-		func(case):
-			var sig = GDSodiumSign.sign(
-				case.message, case.private_key)
-			return sig == case.signature + case.message
-	)
-
-func test_verify_detached():
-	return run_sign(
-		func(case):
-			return GDSodiumSign.verify_detached(
-				case.message, case.signature, case.public_key)
-	)
-
-func test_open():
-	return run_sign(
-		func(case):
-			var message = GDSodiumSign.open(
-				case.signature + case.message, case.public_key)
-			return message.valid and message.message == case.message
-	)
-
-func test_sign_multipart():
-	return run_sign(
-		func(case):
-			var signer = GDSodiumSign.new()
-			signer.update(case.message)
-			signer.update(case.message2)
-			return signer.final_sign(case.private_key) == case.signature2
-	)
-
-func test_verify_multipart():
-	return run_sign(
-		func(case):
-			var signer = GDSodiumSign.new()
-			signer.update(case.message)
-			signer.update(case.message2)
-			return signer.final_verify(case.signature2, case.public_key)
-	)
+func test_verify_multipart(case=use_parameters(sign_sets)):
+	var signer = GDSodiumSign.new()
+	signer.update(case.message)
+	signer.update(case.message2)
+	assert_true(signer.final_verify(case.signature2, case.public_key))
 
 
 # seed, private, public, message, signature, message2, sig2
 # such that sign(message, private_key) = signature
-# and update(message), update(message2), final_sign() = sig2
+# and update(message), update(message2), final_sign(private_key) = sig2
 const sign_sets_array = [
 	['yxodmQ6P66AztesUZ3qol3F9aANC5rdrCUdgizyK+ig=',
 	'yxodmQ6P66AztesUZ3qol3F9aANC5rdrCUdgizyK+ijQ'
@@ -219,6 +162,7 @@ class SigSet:
 	var signature
 	var message2
 	var signature2
+
 	func _init(e):
 		e = e.map(func(b):
 			return Marshalls.base64_to_raw(b) if b is String else b)
@@ -230,4 +174,25 @@ class SigSet:
 		message2 = e[5]
 		signature2 = e[6]
 
-var sign_sets = sign_sets_array.map(SigSet.new)
+	func _to_string():
+		return '<SigSet#%d>' % get_instance_id()
+
+func generate_case(_a=null):
+	var kp = GDSodiumSign.generate_keypair()
+	var crypto = Crypto.new()
+	var message = crypto.generate_random_bytes(32)
+	var message2 = crypto.generate_random_bytes(32)
+	var signer = GDSodiumSign.new()
+	signer.update(message)
+	signer.update(message2)
+	return SigSet.new([
+		GDSodiumSign.private_key_to_seed(kp.private_key),
+		kp.private_key,
+		kp.public_key,
+		message,
+		GDSodiumSign.sign_detached(message, kp.private_key),
+		message2,
+		signer.final_sign(kp.private_key)
+	])
+
+var sign_sets = sign_sets_array.map(SigSet.new) + range(10).map(generate_case)
