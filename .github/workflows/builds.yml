@@ -96,6 +96,14 @@ jobs:
         shell: sh
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' ${{ matrix.compile_args }}
+
+      - name: Run tests (Linux)
+        if: ${{ matrix.platform == 'linux' }}
+        uses: croconut/godot-tester@v5
+        with:
+          version: "4.2.1"
+          path: "demo"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
