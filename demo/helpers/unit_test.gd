@@ -16,20 +16,24 @@ func run():
             output.newline()
     return success
 
-func base64(b):
+static func base64(b):
     if b is String:
         return Marshalls.base64_to_raw(b)
     else:
         return Marshalls.raw_to_base64(b)
 
-func ascii(b):
+static func ascii(b):
     if b is String:
         return b.to_ascii_buffer()
     else:
         return b.get_string_from_ascii()
 
-static func run_many(output, case_name: String, f: Callable, cases: Array):
-    output.info('Running %d %ss' % [len(cases), case_name])
+static func run_many(output, case_name: String, f: Callable, cases: Array,
+        name=null):
+    var header = 'Running %d %ss'
+    if name:
+        header += ' (%s)' % name
+    output.info(header % [len(cases), case_name])
     var status = []
     for c in range(len(cases)):
         var case_passed = f.call(cases[c])
@@ -50,8 +54,8 @@ static func run_many(output, case_name: String, f: Callable, cases: Array):
         ])
     return success
 
-func run_cases(f: Callable, cases: Array):
-    return run_many(output, 'case', f, cases)
+func run_cases(f: Callable, cases: Array, name=null):
+    return run_many(output, 'case', f, cases, name)
 
-func run_cases_b64(f: Callable, cases: Array):
-    return run_cases(f, cases.map(func(a): return a.map(self.base64)))
+func run_cases_b64(f: Callable, cases: Array, name=null):
+    return run_cases(f, cases.map(func(a): return a.map(self.base64)), name)
