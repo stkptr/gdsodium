@@ -78,7 +78,9 @@ library = env.SharedLibrary(
 
 copy_demo = env.InstallAs('demo/bin', 'extension')
 
-default_args = [library, copy_demo]
+copy_gut = env.InstallAs('demo/addons', 'gut/addons')
+
+default_args = [library, copy_demo, copy_gut]
 if localEnv.get("compiledb", False):
     default_args += [compilation_db]
 Default(*default_args)
