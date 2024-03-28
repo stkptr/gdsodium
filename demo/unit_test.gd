@@ -20,12 +20,13 @@ func generate_cases(count, rng=null):
 
 class BaseCase:
 	var test_rand_object
+	var test_rand_state
 
 	func get_custom_properties() -> Array:
 		var properties = []
 		var hit_valid = false
 		const sentinel = 'Built-in script'
-		const exclude = [sentinel, 'test_rand_object']
+		const exclude = [sentinel, 'test_rand_object', 'test_rand_state']
 		for p in get_property_list():
 			if hit_valid and not p['name'] in exclude:
 				properties.push_back(p)
@@ -35,8 +36,6 @@ class BaseCase:
 
 	func _init(d={}, rng=null):
 		test_rand_object = rng
-		if test_rand_object == null:
-			test_rand_object = RandomNumberGenerator.new()
 		var properties = get_custom_properties()
 		for p in properties:
 			var source = d.get(p['name'])
@@ -50,7 +49,14 @@ class BaseCase:
 			d[p['name']] = Marshalls.raw_to_base64(get(p['name']))
 		return d
 
+	func initialize_rand():
+		if test_rand_object == null:
+			test_rand_object = RandomNumberGenerator.new()
+		if test_rand_state == null:
+			test_rand_state = test_rand_object.state
+
 	func rand_bytes(count: int) -> PackedByteArray:
+		initialize_rand()
 		return PackedByteArray(range(count).map(
 			func(_a): return test_rand_object.randi_range(0, 255)
 		))
@@ -64,4 +70,7 @@ class BaseCase:
 		return instance
 
 	func _to_string() -> String:
-		return '<Case#%d>' % get_instance_id()
+		if test_rand_state != null:
+			return '<Case(state#%d)>' % test_rand_state
+		else:
+			return '<Case#%d>' % get_instance_id()
