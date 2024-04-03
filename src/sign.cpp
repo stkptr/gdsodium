@@ -48,6 +48,10 @@ Bytes GDSodiumSign::private_key_to_seed(
     Bytes seed{};
     seed.resize(crypto_sign_SEEDBYTES);
 
+    if (private_key.size() != crypto_sign_SECRETKEYBYTES) {
+        return Bytes();
+    }
+
     if (crypto_sign_ed25519_sk_to_seed(
         seed.ptrw(), private_key.ptr()
     ) != 0) {
@@ -63,6 +67,10 @@ Bytes GDSodiumSign::private_key_to_public_key(
 ) {
     Bytes public_key{};
     public_key.resize(crypto_sign_PUBLICKEYBYTES);
+
+    if (private_key.size() != crypto_sign_SECRETKEYBYTES) {
+        return Bytes();
+    }
 
     if (crypto_sign_ed25519_sk_to_pk(
         public_key.ptrw(), private_key.ptr()

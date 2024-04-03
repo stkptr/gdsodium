@@ -11,7 +11,7 @@ func _init():
 		rng.seed = rseed
 		var cases = script.generate_cases(10, rng)
 		var arrays = cases.map(func(a): return a.dump())
-		var json = JSON.stringify(arrays, '  ')
+		var json = JSON.stringify(arrays, '\t')
 		var outfile = f.get_basename() + '.json'
 		var w = FileAccess.open(outfile, FileAccess.WRITE)
 		w.store_string(json)

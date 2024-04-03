@@ -7,16 +7,56 @@ var filename
 var cases
 
 func _init(_Case, _filename):
+	super()
 	Case = _Case
 	filename = _filename
-	var static_cases = JSON.parse_string(FileAccess.get_file_as_string(filename))
+	var static_cases = []
+	if FileAccess.file_exists(filename):
+		static_cases = JSON.parse_string(
+			FileAccess.get_file_as_string(filename))
+	else:
+		print(("Static case file '%s' not found."
+			+ " Ignore this warning if generating static cases.")
+			% filename
+		)
 	var random_cases = generate_cases(10)
 	cases = static_cases.map(Case.new) + random_cases
-	super()
 
 func generate_cases(count, rng=null):
 	var case = Case.new()
 	return range(count).map(func(_a): return case.generate(rng))
+
+static func is_empty(e):
+	if e is PackedByteArray:
+		return e.is_empty()
+	elif e is GDSodiumType:
+		for p in e.get_property_list():
+			if p['type'] == 1 and e.get(p['name']):
+				return false
+			elif p['type'] == 29 and not e.get(p['name']).is_empty():
+				return false
+	return true
+
+func assert_empty(e, msg=''):
+	assert_true(is_empty(e), msg)
+
+func assert_not_empty(e, msg=''):
+	assert_false(is_empty(e), msg)
+
+func assert_incorrect_length(f, v: PackedByteArray, msg=''):
+	var p = v.slice(v.size() / 2)
+	assert_empty(f.call(p), msg)
+	p.append_array(v)
+	assert_empty(f.call(p), msg)
+
+func assert_ilen_ne(f, v: PackedByteArray, t, msg=''):
+	var p = v.slice(v.size() / 2)
+	assert_ne(f.call(p), t, msg)
+	p.append_array(v)
+	assert_ne(f.call(p), t, msg)
+
+func assert_ilen_false(f, v: PackedByteArray, msg=''):
+	assert_ilen_ne(f, v, true, msg)
 
 class BaseCase:
 	var test_rand_object
