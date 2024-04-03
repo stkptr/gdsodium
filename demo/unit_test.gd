@@ -27,7 +27,7 @@ func generate_cases(count, rng=null):
 	return range(count).map(func(_a): return case.generate(rng))
 
 static func is_empty(e):
-	if e is PackedByteArray:
+	if e is PackedByteArray or e is Array:
 		return e.is_empty()
 	elif e is GDSodiumType:
 		for p in e.get_property_list():
@@ -57,6 +57,20 @@ func assert_ilen_ne(f, v: PackedByteArray, t, msg=''):
 
 func assert_ilen_false(f, v: PackedByteArray, msg=''):
 	assert_ilen_ne(f, v, true, msg)
+
+func assert_many(assertion: Callable, f: Callable, d: Dictionary):
+	for k in d.keys():
+		var case_f = func(x):
+			var infixed = d.duplicate()
+			infixed[k] = x
+			return f.call(infixed)
+		assertion.call(case_f, d[k])
+
+func assert_many_false(f: Callable, d: Dictionary):
+	assert_many(assert_ilen_false, f, d)
+
+func assert_many_empty(f: Callable, d: Dictionary):
+	assert_many(assert_incorrect_length, f, d)
 
 class BaseCase:
 	var test_rand_object

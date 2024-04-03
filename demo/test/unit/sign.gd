@@ -10,9 +10,10 @@ func test_generate_seed(case=use_parameters(cases)):
 	var kp = GDSodiumSign.generate_keypair(case.key_seed)
 	assert_eq(kp.private_key, case.private_key)
 	assert_eq(kp.public_key, case.public_key)
-	var bad_seed = case.key_seed.slice(GDSodiumSign.SEED_BYTES / 2)
-	assert_empty(GDSodiumSign.generate_keypair(bad_seed),
-		'seeds of improper length shall return an empty pair')
+	assert_incorrect_length(
+		func(a): return GDSodiumSign.generate_keypair(a),
+		case.key_seed
+	)
 
 func test_private_key_to_seed(case=use_parameters(cases)):
 	var key_seed = GDSodiumSign.private_key_to_seed(case.private_key)
@@ -57,18 +58,15 @@ func test_sign(case=use_parameters(cases)):
 		case.private_key
 	)
 
-func assert_triplet_false(triplet, a, b, c):
-	assert_ilen_false(func(x): return triplet.call(x, b, c), a)
-	assert_ilen_false(func(x): return triplet.call(a, x, c), b)
-	assert_ilen_false(func(x): return triplet.call(a, b, x), c)
-
 func test_verify_detached(case=use_parameters(cases)):
 	assert_true(GDSodiumSign.verify_detached(
 		case.message, case.signature, case.public_key
 	))
-	var triplet = func(sig, msg, pub):
-		return GDSodiumSign.verify_detached(msg, sig, pub)
-	assert_triplet_false(triplet, case.signature, case.message, case.public_key)
+	var triplet = func(d):
+		return GDSodiumSign.verify_detached(d.msg, d.sig, d.pub)
+	assert_many_false(triplet, {
+		sig = case.signature, msg = case.message, pub = case.public_key
+	})
 
 func test_open(case=use_parameters(cases)):
 	var message = GDSodiumSign.open(
@@ -76,28 +74,40 @@ func test_open(case=use_parameters(cases)):
 	)
 	assert_true(message.valid)
 	assert_eq(message.message, case.message)
-	var triplet = func(sig, msg, pub):
-		var open = GDSodiumSign.open(sig + msg, pub)
+	var triplet = func(d):
+		var open = GDSodiumSign.open(d.sig + d.msg, d.pub)
 		return open.valid or 0 < open.message.size()
-	assert_triplet_false(triplet, case.signature, case.message, case.public_key)
+	assert_many_false(triplet, {
+		sig = case.signature, msg = case.message, pub = case.public_key
+	})
 
 func test_sign_multipart(case=use_parameters(cases)):
-	var sign = func(msg, msg2, priv):
+	var sign = func(d):
 		var signer = GDSodiumSign.new()
-		signer.update(msg)
-		signer.update(msg2)
-		return signer.final_sign(priv) == case.signature2
-	assert_true(sign.call(case.message, case.message2, case.private_key))
-	assert_triplet_false(sign, case.message, case.message2, case.private_key)
+		signer.update(d.msg)
+		signer.update(d.msg2)
+		return signer.final_sign(d.priv) == case.signature2
+	var args = {
+		msg = case.message,
+		msg2 = case.message2,
+		priv = case.private_key
+	}
+	assert_true(sign.call(args))
+	assert_many_false(sign, args)
 
 func test_verify_multipart(case=use_parameters(cases)):
-	var verify = func(msg, msg2, pub):
+	var verify = func(d):
 		var signer = GDSodiumSign.new()
-		signer.update(msg)
-		signer.update(msg2)
-		return signer.final_verify(case.signature2, pub)
-	assert_true(verify.call(case.message, case.message2, case.public_key))
-	assert_triplet_false(verify, case.message, case.message2, case.public_key)
+		signer.update(d.msg)
+		signer.update(d.msg2)
+		return signer.final_verify(case.signature2, d.pub)
+	var args = {
+		msg = case.message,
+		msg2 = case.message2,
+		pub = case.public_key
+	}
+	assert_true(verify.call(args))
+	assert_many_false(verify, args)
 
 class Case extends BaseCase:
 	var key_seed

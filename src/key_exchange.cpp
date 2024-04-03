@@ -30,6 +30,7 @@ void GDSodiumKeyExchange::_bind_methods() {
     BIND_CONSTANT_AS(crypto_kx_SESSIONKEYBYTES, "SESSION_KEY_BYTES");
 }
 
+
 GENERATE_KEYPAIR(GDSodiumKeyExchange, crypto_kx);
 
 
@@ -39,6 +40,13 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::client_session_keys(
 ) {
     PackedByteArray receive{};
     PackedByteArray transmit{};
+
+    if (client_keys->public_key.size() != crypto_kx_PUBLICKEYBYTES
+        || client_keys->private_key.size() != crypto_kx_SECRETKEYBYTES
+        || server_public_key.size() != crypto_kx_PUBLICKEYBYTES
+    ) {
+        return EMPTY(GDSodiumDirectionalKeys);
+    }
 
     receive.resize(crypto_kx_SESSIONKEYBYTES);
     transmit.resize(crypto_kx_SESSIONKEYBYTES);
@@ -50,7 +58,7 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::client_session_keys(
         client_keys->private_key.ptr(),
         server_public_key.ptr()
     ) != 0) {
-        return memnew(GDSodiumDirectionalKeys());
+        return EMPTY(GDSodiumDirectionalKeys);
     }
 
     return memnew(GDSodiumDirectionalKeys(receive, transmit));
@@ -64,6 +72,13 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::server_session_keys(
     PackedByteArray receive{};
     PackedByteArray transmit{};
 
+    if (server_keys->public_key.size() != crypto_kx_PUBLICKEYBYTES
+        || server_keys->private_key.size() != crypto_kx_SECRETKEYBYTES
+        || client_public_key.size() != crypto_kx_PUBLICKEYBYTES
+    ) {
+        return EMPTY(GDSodiumDirectionalKeys);
+    }
+
     receive.resize(crypto_kx_SESSIONKEYBYTES);
     transmit.resize(crypto_kx_SESSIONKEYBYTES);
 
@@ -74,7 +89,7 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::server_session_keys(
         server_keys->private_key.ptr(),
         client_public_key.ptr()
     ) != 0) {
-        return memnew(GDSodiumDirectionalKeys());
+        return EMPTY(GDSodiumDirectionalKeys);
     }
 
     return memnew(GDSodiumDirectionalKeys(receive, transmit));
