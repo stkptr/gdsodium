@@ -5,6 +5,8 @@ using namespace godot;
 using namespace gdsodium;
 
 void GDSodiumSign::_bind_methods() {
+    BIND_METHOD(GDSodiumSign, start);
+    BIND_STATIC(GDSodiumSign, create);
     ClassDB::bind_static_method(
         "GDSodiumSign",
         D_METHOD("generate_keypair", "seed"),
@@ -170,20 +172,28 @@ bool GDSodiumSign::verify_detached(
 }
 
 
-void GDSodiumSign::update(
+bool GDSodiumSign::update(
     const Bytes &data
 ) {
+    if (!initialized) {
+        return false;
+    }
+
     crypto_sign_update(&state, data.ptr(), data.size());
+    return true;
 }
 
 
 Bytes GDSodiumSign::final_sign(
     const Bytes &private_key
 ) {
+
     Bytes signature{};
     signature.resize(crypto_sign_BYTES);
 
-    if (private_key.size() != crypto_sign_SECRETKEYBYTES) {
+    if (!initialized
+        || private_key.size() != crypto_sign_SECRETKEYBYTES
+    ) {
         return Bytes();
     }
 
@@ -203,7 +213,8 @@ bool GDSodiumSign::final_verify(
     const Bytes &signature,
     const Bytes &public_key
 ) {
-    if (public_key.size() != crypto_sign_PUBLICKEYBYTES
+    if (!initialized
+        || public_key.size() != crypto_sign_PUBLICKEYBYTES
         || signature.size() != crypto_sign_BYTES
     ) {
         return false;

@@ -83,7 +83,7 @@ func test_open(case=use_parameters(cases)):
 
 func test_sign_multipart(case=use_parameters(cases)):
 	var sign = func(d):
-		var signer = GDSodiumSign.new()
+		var signer = GDSodiumSign.create()
 		signer.update(d.msg)
 		signer.update(d.msg2)
 		return signer.final_sign(d.priv) == case.signature2
@@ -97,7 +97,7 @@ func test_sign_multipart(case=use_parameters(cases)):
 
 func test_verify_multipart(case=use_parameters(cases)):
 	var verify = func(d):
-		var signer = GDSodiumSign.new()
+		var signer = GDSodiumSign.create()
 		signer.update(d.msg)
 		signer.update(d.msg2)
 		return signer.final_verify(case.signature2, d.pub)
@@ -122,7 +122,7 @@ class Case extends BaseCase:
 		var kp = GDSodiumSign.generate_keypair(
 			rand_bytes(GDSodiumSign.SEED_BYTES)
 		)
-		var signer = GDSodiumSign.new()
+		var signer = GDSodiumSign.create()
 
 		key_seed = GDSodiumSign.private_key_to_seed(kp.private_key)
 		private_key = kp.private_key

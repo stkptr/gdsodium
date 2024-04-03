@@ -18,6 +18,20 @@ domain, but libsodium and GDExtension both have credit requirements.
 graphical-only, you should have some menu option which shows a list of licenses,
 including the licenses for godot-cpp and libsodium.
 
+GDSodium is mainly a collection of static methods which closely follow
+libsodium's API. The exceptions are the piecewise utilities (generic hash, sign,
+stream, box, etc.) which are objects that are instantiated.
+
+All\* instantiable objects have the following methods:
+- `new()` allocates the object, returning a new one
+- `start(args, ...)` initializes the object with the given args
+- `create(args, ...)` allocates and initializes the object
+
+\*: *Data objects (like GDSodiumKeyPair) only have new and create.*
+
+Once created, an object can be `start()`ed many times, each time resetting the
+internal state.
+
 ## Supported architectures
 
 - Windows: `x86_32`, `x86_64`
@@ -34,6 +48,13 @@ will not be supported until that issue is fixed. It's a threading-related issue.
 Further, only `x86_64` and `arm64` Linux, `x86_64` Windows, and
 `x86_64` and `arm64` Android are tested.
 
+## Unit tests
+
+GDSodium uses [GUT] for unit testing. Almost all tests are parameterized,
+running on 10 static cases and 10 runtime cases. Before running the tests you
+need to run SCons. See the compiling section for more info. To generate the
+static test cases use `./run_tests.sh generate`. To run the tests use
+`./run_tests.sh`.
 
 ## Compiling
 

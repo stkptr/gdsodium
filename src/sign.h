@@ -11,18 +11,24 @@ class GDSodiumSign : public godot::RefCounted {
 	GDCLASS(GDSodiumSign, godot::RefCounted)
 
     crypto_sign_state state;
+    bool initialized = false;
 
 protected:
 	static void _bind_methods();
 
 public:
-    GDSodiumSign() {
-        crypto_sign_init(&state);
-    }
+    GDSodiumSign() {}
     ~GDSodiumSign() {}
 
-    static godot::Ref<GDSodiumSign> start() {
-        return memnew(GDSodiumSign());
+    void start() {
+        crypto_sign_init(&state);
+        initialized = true;
+    }
+
+    static godot::Ref<GDSodiumSign> create() {
+        godot::Ref<GDSodiumSign> obj = memnew(GDSodiumSign());
+        obj->start();
+        return obj;
     }
 
     static godot::Ref<GDSodiumKeyPair> generate_keypair(
@@ -58,7 +64,7 @@ public:
         const Bytes &public_key
     );
 
-    void update(
+    bool update(
         const Bytes &data
     );
 
