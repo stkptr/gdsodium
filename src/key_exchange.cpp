@@ -1,8 +1,6 @@
 #include "key_exchange.h"
-#include <godot_cpp/core/class_db.hpp>
 #include <sodium.h>
 
-using namespace godot;
 using namespace gdsodium;
 
 void GDSodiumKeyExchange::_bind_methods() {

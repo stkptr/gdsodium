@@ -1,14 +1,11 @@
 #ifndef GDSODIUM_H
 #define GDSODIUM_H
 
-#include <gdsodium_common.h>
-
-#include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/variant/packed_byte_array.hpp>
+#include "gdsodium_common.h"
 
 namespace gdsodium {
 
-class GDSodium : public godot::Object {
+class GDSodium : public Object {
 	GDCLASS(GDSodium, Object)
 
 protected:
@@ -18,23 +15,19 @@ public:
 	GDSodium();
 	~GDSodium();
 
-    static godot::Ref<GDSodiumTaggedMessage> chacha20_poly1305_ietf_encrypt_detached(
+    static Ref<GDSodiumTaggedMessage> chacha20_poly1305_ietf_encrypt_detached(
         const Bytes &message,
         const Bytes &key,
         const Bytes &nonce,
         const Bytes &associated_data
     );
 
-    static godot::Ref<GDSodiumValidatedMessage> chacha20_poly1305_ietf_decrypt_detached(
+    static Ref<GDSodiumValidatedMessage> chacha20_poly1305_ietf_decrypt_detached(
         const Bytes &message,
         const Bytes &mac,
         const Bytes &key,
         const Bytes &nonce,
         const Bytes &associated_data
-    );
-
-    static int variant_check(
-        godot::Variant a
     );
 
     static Bytes argon2id_hash(

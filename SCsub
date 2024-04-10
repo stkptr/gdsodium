@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+Import('env')
+
+libsodium, datatypes = SConscript(
+    'common.SConstruct',
+    {'env': env, 'customs': []}
+)
+
+sources = Glob("src/*.cpp") + Glob("*.cpp")
+
+for s in sources:
+    obj = env.Object(s)
+    env.Depends(obj, libsodium)
+    env.Depends(obj, datatypes)
+    env.modules_sources.append(obj)

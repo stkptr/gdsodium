@@ -1,26 +1,37 @@
 #ifndef GDSODIUM_COMMON_H
 #define GDSODIUM_COMMON_H
 
+#ifdef GDSODIUM_EXTENSION
+#include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/core/class_db.hpp>
+using namespace godot;
+#else
+#include "core/object/object.h"
+#include "core/object/ref_counted.h"
+#include "core/object/class_db.h"
+#endif
+
 #include "gdsodium_types.h"
 
 namespace gdsodium {
 
 #define BIND_METHOD(class, method_name, ...) \
-    godot::ClassDB::bind_method( \
-        godot::D_METHOD(#method_name, ##__VA_ARGS__), \
+    ClassDB::bind_method( \
+        D_METHOD(#method_name, ##__VA_ARGS__), \
         &class::method_name \
     );
 
 #define BIND_STATIC(class, method_name, ...) \
-    godot::ClassDB::bind_static_method( \
+    ClassDB::bind_static_method( \
         #class, \
-        godot::D_METHOD(#method_name, ##__VA_ARGS__), \
+        D_METHOD(#method_name, ##__VA_ARGS__), \
         &class::method_name \
     );
 
 #define BIND_CONSTANT_AS(m_constant, m_name) \
-    godot::ClassDB::bind_integer_constant( \
+    ClassDB::bind_integer_constant( \
         get_class_static(), "", m_name, m_constant);
 
 #define EMPTY(class) memnew(class());
@@ -52,7 +63,7 @@ namespace gdsodium {
         return memnew(GDSodiumKeyPair(public_key, private_key)); \
     }
 
-typedef godot::PackedByteArray Bytes;
+typedef PackedByteArray Bytes;
 
 }
 

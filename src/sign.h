@@ -1,14 +1,13 @@
 #ifndef GDSODIUM_SIGN_H
 #define GDSODIUM_SIGN_H
 
-#include <godot_cpp/classes/ref_counted.hpp>
-#include <sodium.h>
 #include "gdsodium_common.h"
+#include <sodium.h>
 
 namespace gdsodium {
 
-class GDSodiumSign : public godot::RefCounted {
-	GDCLASS(GDSodiumSign, godot::RefCounted)
+class GDSodiumSign : public RefCounted {
+	GDCLASS(GDSodiumSign, RefCounted)
 
     crypto_sign_state state;
     bool initialized = false;
@@ -25,13 +24,13 @@ public:
         initialized = true;
     }
 
-    static godot::Ref<GDSodiumSign> create() {
-        godot::Ref<GDSodiumSign> obj = memnew(GDSodiumSign());
+    static Ref<GDSodiumSign> create() {
+        Ref<GDSodiumSign> obj = memnew(GDSodiumSign());
         obj->start();
         return obj;
     }
 
-    static godot::Ref<GDSodiumKeyPair> generate_keypair(
+    static Ref<GDSodiumKeyPair> generate_keypair(
         const Bytes &seed
     );
 
@@ -53,7 +52,7 @@ public:
         const Bytes &private_key
     );
 
-    static godot::Ref<GDSodiumValidatedMessage> open(
+    static Ref<GDSodiumValidatedMessage> open(
         const Bytes &signed_message,
         const Bytes &public_key
     );

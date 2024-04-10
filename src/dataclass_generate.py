@@ -12,9 +12,9 @@ TypedName = namedtuple(
 
 bind_template = '''
 static void _bind_methods() {{
-    godot::ClassDB::bind_static_method(
+    ClassDB::bind_static_method(
         "{class_name}",
-        godot::D_METHOD("create",
+        D_METHOD("create",
 {property_names}
         ),
         &{class_name}::create
@@ -25,16 +25,16 @@ static void _bind_methods() {{
 
 
 bind_property_template = '''
-godot::ClassDB::bind_method(
-    godot::D_METHOD("get_{property_name}"),
+ClassDB::bind_method(
+    D_METHOD("get_{property_name}"),
     &{class_name}::get_{property_name}
 );
-godot::ClassDB::bind_method(
-    godot::D_METHOD("set_{property_name}"),
+ClassDB::bind_method(
+    D_METHOD("set_{property_name}"),
     &{class_name}::set_{property_name}
 );
 ADD_PROPERTY(
-    godot::PropertyInfo({property_variant}, "{property_name}"),
+    PropertyInfo({property_variant}, "{property_name}"),
     "set_{property_name}",
     "get_{property_name}"
 );
@@ -61,8 +61,8 @@ static {class_name}* create(
 '''
 
 setter_template = '''
-void set_{property_name}({property_parameter_type} {property_name}) {{
-    this->{property_name} = {property_name};
+void set_{property_name}({property_parameter_type} new_{property_name}) {{
+    {property_name} = new_{property_name};
 }}
 {property_return_type} get_{property_name}() const {{
     return {property_name};
@@ -88,14 +88,14 @@ public:
 
 type_map = {
     'Bytes': [
-        'godot::PackedByteArray',
-        'godot::Variant::PACKED_BYTE_ARRAY',
-        'const godot::PackedByteArray &',
-        'godot::PackedByteArray()'
+        'PackedByteArray',
+        'Variant::PACKED_BYTE_ARRAY',
+        'const PackedByteArray &',
+        'PackedByteArray()'
     ],
     'bool': [
         'bool',
-        'godot::Variant::BOOL',
+        'Variant::BOOL',
         'bool',
         'false'
     ]
@@ -156,17 +156,17 @@ def generate_class(definition):
         constructors=indent(constructor_template.format(
             class_name=definition.name,
             param_names=indent(2, ',\n'.join([
-                t.name for t in definition.members
+                f'new_{t.name}' for t in definition.members
             ])),
             property_params=indent(',\n'.join([
-                f'{t.parameter_type} {t.name}' for t in definition.members
+                f'{t.parameter_type} new_{t.name}' for t in definition.members
             ])),
             property_defaults=indent('\n'.join([
                 f'{t.name} = {t.default_value};'
                 for t in definition.members
             ])),
             property_assigns=indent('\n'.join([
-                f'this->{t.name} = {t.name};'
+                f'this->{t.name} = new_{t.name};'
                 for t in definition.members
             ])),
         )),

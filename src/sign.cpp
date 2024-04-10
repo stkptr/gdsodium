@@ -1,7 +1,5 @@
 #include "sign.h"
-#include <godot_cpp/core/class_db.hpp>
 
-using namespace godot;
 using namespace gdsodium;
 
 void GDSodiumSign::_bind_methods() {
@@ -130,7 +128,7 @@ Bytes GDSodiumSign::sign_detached(
 }
 
 
-godot::Ref<GDSodiumValidatedMessage> GDSodiumSign::open(
+Ref<GDSodiumValidatedMessage> GDSodiumSign::open(
     const Bytes &signed_message,
     const Bytes &public_key
 ) {

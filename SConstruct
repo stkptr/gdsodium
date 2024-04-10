@@ -42,27 +42,23 @@ Help(opts.GenerateHelpText(localEnv))
 env = localEnv.Clone()
 env["compiledb"] = False
 
+env.Append(CCFLAGS=['-DGDSODIUM_EXTENSION'])
+
 env.Tool("compilation_db")
 compilation_db = env.CompilationDatabase(
     normalize_path(localEnv["compiledb_file"], localEnv)
 )
 env.Alias("compiledb", compilation_db)
 
-env = SConscript('libsodium.SConstruct', {'env': env, 'customs': customs})
+libsodium, datatypes = SConscript(
+    'common.SConstruct',
+    {'env': env, 'customs': []}
+)
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp")
-
-env.Command(
-    'src/generated_datatypes.h', [
-        'src/dataclass_generate.py',
-        'src/dataclasses.json',
-    ], [
-        './src/dataclass_generate.py src/dataclasses.json > $TARGET'
-    ]
-)
+sources = Glob("src/*.cpp") + Glob("*.cpp")
 
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
 
@@ -75,6 +71,9 @@ library = env.SharedLibrary(
     libraryfile,
     source=sources,
 )
+
+env.Depends(library, libsodium)
+env.Depends(library, datatypes)
 
 copy_demo = env.InstallAs('demo/bin', 'extension')
 

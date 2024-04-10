@@ -8,7 +8,6 @@ import sys
 import platform
 
 Import('env')
-env = env.Clone()
 
 Import('customs')
 opts = Variables(customs, ARGUMENTS)
@@ -24,6 +23,14 @@ opts.Add(
     help='Custom arguments for ./configure',
     default=''
 )
+opts.Add(
+    EnumVariable(
+        key='sodium_optimize',
+        help='Optimization level for Zig compilation.',
+        default='speed',
+        allowed_values=('speed', 'size', 'safety')
+    )
+)
 opts.Update(env)
 Help(opts.GenerateHelpText(env))
 
@@ -33,6 +40,8 @@ elif sys.platform.startswith('win32'):
     DEFAULT_PLATFORM = 'windows'
 elif sys.platform.startswith('darwin'):
     DEFAULT_PLATFORM = 'macos'
+
+BASE = os.getcwd()
 
 DEFAULT_ARCH = platform.uname()[-2]
 
@@ -46,7 +55,7 @@ EXT = 'lib' if PLATFORM == 'windows' else 'a'
 NOOP = 'echo'
 
 NAME = 'sodium'
-DIRECTORY = 'libsodium'
+DIRECTORY = f'{BASE}/libsodium'
 LIBNAME = NAME if PLATFORM == 'windows' else f'lib{NAME}'
 LIBFILE = f'{LIBNAME}.{EXT}'
 
@@ -57,7 +66,7 @@ SODIUM_CONFIGURE = ARGUMENTS.get('sodium_configure', '')
 CONFIGURE = (
     'sh configure'
     ' --with-pic --disable-pie'
-    ' --enable-static=yes --enable-shared=no'
+    ' --enable-static --disable-shared'
     f' {SODIUM_CONFIGURE}'
 )
 MAKE = f'make -j{GetOption("num_jobs")}'
@@ -95,7 +104,6 @@ if PLATFORM == 'android':
     CONFIGURE = f'sh dist-build/android-{archmap[ARCH]}.sh'
     MAKE = NOOP
 
-
 def copy_into_env(env, var, default=''):
     if var in os.environ:
         env['ENV'][var] = os.environ[var]
@@ -118,7 +126,7 @@ def recursive_glob_ext(base, exts):
 
 TARGET = env.File(TARGET)
 
-env.Command(TARGET, recursive_glob_ext(DIRECTORY, SOURCE_EXT), [
+build = env.Command(TARGET, recursive_glob_ext(DIRECTORY, SOURCE_EXT), [
     f'cd {DIRECTORY} && {CONFIGURE} && {MAKE}'
 ])
 
@@ -128,5 +136,4 @@ if GetOption('clean'):
 env.Append(CPPPATH=[INCLUDE])
 env.Append(LIBS=[TARGET])
 
-
-Return('env')
+Return('build')

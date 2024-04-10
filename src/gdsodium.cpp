@@ -1,9 +1,7 @@
 #include "gdsodium.h"
-#include <godot_cpp/core/class_db.hpp>
 #define SODIUM_STATIC
 #include <sodium.h>
 
-using namespace godot;
 using namespace gdsodium;
 
 void GDSodium::_bind_methods() {
@@ -34,7 +32,7 @@ GDSodium::GDSodium() {}
 GDSodium::~GDSodium() {}
 
 
-godot::Ref<GDSodiumTaggedMessage> GDSodium::chacha20_poly1305_ietf_encrypt_detached(
+Ref<GDSodiumTaggedMessage> GDSodium::chacha20_poly1305_ietf_encrypt_detached(
     const PackedByteArray &message,
     const PackedByteArray &key,
     const PackedByteArray &nonce,
@@ -70,7 +68,7 @@ godot::Ref<GDSodiumTaggedMessage> GDSodium::chacha20_poly1305_ietf_encrypt_detac
     return memnew(GDSodiumTaggedMessage(ciphertext, mac));
 }
 
-godot::Ref<GDSodiumValidatedMessage> GDSodium::chacha20_poly1305_ietf_decrypt_detached(
+Ref<GDSodiumValidatedMessage> GDSodium::chacha20_poly1305_ietf_decrypt_detached(
     const PackedByteArray &message,
     const PackedByteArray &mac,
     const PackedByteArray &key,

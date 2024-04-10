@@ -1,7 +1,7 @@
 # GDSodium
 
 GDSodium is a set of libsodium bindings for GDScript. GDSodium is provided as a
-GDExtension targeting Godot 4.2 and above.
+GDExtension or module targeting Godot 4.2 and above.
 
 ## Usage guide
 
@@ -9,7 +9,14 @@ GDSodium is currently **not stable**. You shouldn't use it for anything
 important yet.
 
 However, once GDSodium is stable head over to [releases] and grab the newest
-`gdsodium.zip`. Unzip into your project and you should be good to go.
+`gdsodium.zip`. Unzip into your project and you should be good to go. This adds
+the GDSodium extension to your project, which will be automatically loaded and
+included in exports.
+
+If you plan on exporting to web or otherwise want to use GDSodium as a module
+instead, you can add GDSodium to your custom Godot's modules directory. It's
+recommended that you add GDSodium as a submodule pegged to a specific release.
+Once added, GDSodium will automatically compile when you compile the engine.
 
 By using GDSodium you must agree to some licenses. GDSodium itself is public
 domain, but libsodium and GDExtension both have credit requirements.
@@ -22,21 +29,24 @@ GDSodium is mainly a collection of static methods which closely follow
 libsodium's API. The exceptions are the piecewise utilities (generic hash, sign,
 stream, box, etc.) which are objects that are instantiated.
 
-All\* instantiable objects have the following methods:
+All instantiable objects have the following methods:
 - `new()` allocates the object, returning a new one
 - `start(args, ...)` initializes the object with the given args
 - `create(args, ...)` allocates and initializes the object
 
-\*: *Data objects (like GDSodiumKeyPair) only have new and create.*
-
 Once created, an object can be `start()`ed many times, each time resetting the
 internal state.
+
+Some objects have more complex APIs, like HKDF. Additionally, most utilities
+which use keys will have `generate_*()` methods, which will often accept an
+optional seed.
 
 ## Supported architectures
 
 - Windows: `x86_32`, `x86_64`
 - Linux:  `x86_32`, `x86_64`, `arm64`, `ppc32`, `ppc64`
 - Android: `arm32` (`armv7`), `arm64` (`armv8`/`aarch64`), `x86_32`, `x86_64`
+- Web (only supported as a module)
 
 Other architectures and platforms should be supported, but they either haven't
 or can't be added to the [Docker buildsystem](/docker-build) so they are not
@@ -45,8 +55,8 @@ included in releases.
 On Linux, `arm32` and `riscv64` compilation fails with Godot, so those platforms
 will not be supported until that issue is fixed. It's a threading-related issue.
 
-Further, only `x86_64` and `arm64` Linux, `x86_64` Windows, and
-`x86_64` and `arm64` Android are tested.
+Further, only `x86_64` and `arm64` Linux, `x86_64` Windows, `x86_64` and `arm64`
+Android, and web are tested.
 
 ## Unit tests
 
