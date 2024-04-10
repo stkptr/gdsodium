@@ -20,7 +20,10 @@ using namespace godot;
 using namespace gdsodium;
 
 void initialize(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE || sodium_init() < 0) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE
+	    || sodium_init() < 0
+	    || ClassDB::class_exists("GDSodium")
+	) {
 		return;
 	}
     ClassDB::register_class<GDSodium>();
