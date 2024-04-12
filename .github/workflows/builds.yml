@@ -103,7 +103,6 @@ jobs:
         with:
           version: "4.2.1"
           path: "demo"
-          custom-godot-dl-url: "https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
