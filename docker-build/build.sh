@@ -7,8 +7,8 @@ clean_in() {
 }
 
 clean() {
-    clean_in ../bin
-    rm -rf ../demo/bin
+    clean_in ../extension
+    clean_in ../demo/bin
     rm -rvf ../build
 }
 
@@ -47,8 +47,10 @@ buildkit() {
 }
 
 docker_build() {
-    args="-t gdsodium-${1}:latest -f ${1}.base.dockerfile ${extra_args} ."
+    dockerfile=${1}.base.dockerfile
+    args="-t gdsodium-${1}:latest -f ${dockerfile} ${extra_args} ."
     extra_args=""
+    echo Building ${dockerfile}
     if [ "${2}" = insecure ]; then
         docker buildx build --allow security.insecure ${args}
     else
@@ -56,11 +58,27 @@ docker_build() {
     fi
 }
 
+platform() {
+    printf "%s" ${1%%-*}
+}
+
+gdbuild_to() {
+    dir=$(platform ${2})
+    dockerfile=${2}.${3}.dockerfile
+    if [ ! -e ${dockerfile} ]; then
+        return 1
+    fi
+    buildkit --output="../${1}/${dir}" --target=binaries \
+        -f ${dockerfile} ..
+}
+
 gdbuild() {
-    dir=${1%%-*}
-    buildkit --output=../extension/${dir} --target=binaries \
-        -f ${1}.build.dockerfile .. \
-    && cp -rn ../extension/${dir}/* ../demo/bin/${dir}
+    dir=$(platform ${1})
+    gdbuild_to extension ${1} build
+}
+
+modbuild() {
+    gdbuild_to module ${1} module
 }
 
 gdexport() {
@@ -72,19 +90,21 @@ build_all() {
     echo Building ${1}
     docker_build ${1}
     gdbuild ${1}
+    modbuild ${1}
     if [ ! -z "$EXPORT" ]; then
         echo Exporting ${1}
         gdexport ${1}
     fi
+    cp -ru ../extension ../demo/bin
 }
 
 docker_build debian
 docker_build zig
-docker_build darwin insecure
-docker_build xcode insecure
-docker_build web
+#docker_build darwin insecure
+#docker_build xcode insecure
 
 build_all linux-x86
 build_all linux-cross
 build_all android
 build_all windows
+build_all web

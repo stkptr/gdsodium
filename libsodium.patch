@@ -1,0 +1,13 @@
+diff --git a/dist-build/emscripten.sh b/dist-build/emscripten.sh
+index 000ea819..80ed80e8 100755
+--- a/dist-build/emscripten.sh
++++ b/dist-build/emscripten.sh
+@@ -83,7 +83,7 @@ if [ "$DIST" = yes ]; then
+   }
+   emmake make $MAKE_FLAGS install || exit 1
+   emccLibsodium "${PREFIX}/lib/libsodium.asm.tmp.js" -Oz -s WASM=0 $LDFLAGS_JS
+-  emccLibsodium "${PREFIX}/lib/libsodium.wasm.tmp.js" -O3 -s WASM=1 -s EVAL_CTORS=1 -s INITIAL_MEMORY=${WASM_INITIAL_MEMORY}
++  emccLibsodium "${PREFIX}/lib/libsodium.wasm.tmp.js" -O3 -s WASM=1 -s INITIAL_MEMORY=${WASM_INITIAL_MEMORY}
+ 
+   cat >"${PREFIX}/lib/libsodium.js" <<-EOM
+     var Module;

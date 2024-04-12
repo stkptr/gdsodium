@@ -9,6 +9,8 @@ import platform
 
 Import('env')
 
+subenv = env.Clone()
+
 Import('customs')
 opts = Variables(customs, ARGUMENTS)
 opts.Add(
@@ -104,15 +106,26 @@ if PLATFORM == 'android':
     CONFIGURE = f'sh dist-build/android-{archmap[ARCH]}.sh'
     MAKE = NOOP
 
+if PLATFORM == 'web':
+    prefix = f'{DIRECTORY}/libsodium-js-sumo'
+    TARGET = f'{prefix}/lib/{LIBFILE}'
+    INCLUDE = f'{prefix}/include'
+    CONFIGURE = f'patch -p1 -i ../libsodium.patch'
+    MAKE = (
+        f'sh dist-build/emscripten.sh --sumo'
+        ' && patch -R -p1 -i ../libsodium.patch'
+    )
+    subenv['ENV']['CFLAGS'] = '-pthread'
+
 def copy_into_env(env, var, default=''):
     if var in os.environ:
         env['ENV'][var] = os.environ[var]
     elif default:
         env['ENV'][var] = default
 
-copy_into_env(env, 'ZIG_LOCAL_CACHE_DIR', 'zig-cache')
-copy_into_env(env, 'ZIG_GLOBAL_CACHE_DIR', 'zig-cache')
-copy_into_env(env, 'ANDROID_NDK_HOME')
+copy_into_env(subenv, 'ZIG_LOCAL_CACHE_DIR', 'zig-cache')
+copy_into_env(subenv, 'ZIG_GLOBAL_CACHE_DIR', 'zig-cache')
+copy_into_env(subenv, 'ANDROID_NDK_HOME')
 
 
 def recursive_glob_ext(base, exts):
@@ -126,7 +139,7 @@ def recursive_glob_ext(base, exts):
 
 TARGET = env.File(TARGET)
 
-build = env.Command(TARGET, recursive_glob_ext(DIRECTORY, SOURCE_EXT), [
+build = subenv.Command(TARGET, recursive_glob_ext(DIRECTORY, SOURCE_EXT), [
     f'cd {DIRECTORY} && {CONFIGURE} && {MAKE}'
 ])
 

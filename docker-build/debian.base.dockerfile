@@ -1,7 +1,7 @@
 FROM debian:12.5
 
 RUN apt update \
-    && apt install -y build-essential python3-pip wget unzip git \
+    && apt install -y build-essential pkg-config python3-pip wget unzip git \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --break-system-packages scons

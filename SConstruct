@@ -42,6 +42,8 @@ Help(opts.GenerateHelpText(localEnv))
 env = localEnv.Clone()
 env["compiledb"] = False
 
+env['ENV']['PATH'] = os.environ['PATH']
+
 env.Append(CCFLAGS=['-DGDSODIUM_EXTENSION'])
 
 env.Tool("compilation_db")
@@ -76,10 +78,12 @@ env.Depends(library, libsodium)
 env.Depends(library, datatypes)
 
 copy_demo = env.InstallAs('demo/bin', 'extension')
+default_args = [library, copy_demo]
 
-copy_gut = env.InstallAs('demo/addons', 'gut/addons')
+if os.path.exists('gut'):
+    copy_gut = env.InstallAs('demo/addons', 'gut/addons')
+    default_args.append(copy_gut)
 
-default_args = [library, copy_demo, copy_gut]
 if localEnv.get("compiledb", False):
     default_args += [compilation_db]
 Default(*default_args)

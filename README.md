@@ -46,7 +46,7 @@ optional seed.
 - Windows: `x86_32`, `x86_64`
 - Linux:  `x86_32`, `x86_64`, `arm64`, `ppc32`, `ppc64`
 - Android: `arm32` (`armv7`), `arm64` (`armv8`/`aarch64`), `x86_32`, `x86_64`
-- Web (only supported as a module)
+- Web (use as a module is preferred)
 
 Other architectures and platforms should be supported, but they either haven't
 or can't be added to the [Docker buildsystem](/docker-build) so they are not
