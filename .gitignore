@@ -11,6 +11,10 @@ demo/.godot/*
 
 # Ignore library files but not the gdextension file
 bin/
+template/*
+!template/web
+template/web/*
+!template/web/.gitkeep
 extension/*
 !extension/android
 extension/android/*
@@ -21,6 +25,9 @@ extension/linux/*
 !extension/macos
 extension/macos/*
 !extension/macos/.gitkeep
+!extension/web
+extension/web/*
+!extension/web/.gitkeep
 !extension/windows
 extension/windows/*
 !extension/windows/.gitkeep

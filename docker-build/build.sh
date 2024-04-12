@@ -73,12 +73,11 @@ gdbuild_to() {
 }
 
 gdbuild() {
-    dir=$(platform ${1})
     gdbuild_to extension ${1} build
 }
 
 modbuild() {
-    gdbuild_to module ${1} module
+    gdbuild_to template ${1} module
 }
 
 gdexport() {
@@ -95,7 +94,11 @@ build_all() {
         echo Exporting ${1}
         gdexport ${1}
     fi
-    cp -ru ../extension ../demo/bin
+    dir=$(platform ${1})
+    target=../demo/bin/${dir}
+    mkdir -p ${target}
+    cp -u ../extension/${dir}/* ${target}
+    cp -u ../extension/gdsodium.gdextension ../demo/bin
 }
 
 docker_build debian
