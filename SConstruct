@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import os
 
+libname = 'gdsodium'
+projectdir = 'demo'
+
 
 def normalize_path(val, env):
     return val if os.path.isabs(val) else os.path.join(env.Dir("#").abspath, val)
@@ -10,9 +13,6 @@ def validate_parent_dir(key, val, env):
     if not os.path.isdir(normalize_path(os.path.dirname(val), env)):
         raise UserError("'%s' is not a directory: %s" % (key, os.path.dirname(val)))
 
-
-libname = "gdsodium"
-projectdir = "demo"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -54,7 +54,7 @@ env.Alias("compiledb", compilation_db)
 
 libsodium, datatypes = SConscript(
     'common.SConstruct',
-    {'env': env, 'customs': []}
+    {'env': env, 'customs': customs}
 )
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
@@ -69,6 +69,7 @@ if env["platform"] == "macos":
     file = "{}.framework/{}".format(env["platform"], platlibname, platlibname)
 
 libraryfile = "extension/{}/{}".format(env["platform"], file)
+
 library = env.SharedLibrary(
     libraryfile,
     source=sources,
@@ -77,11 +78,11 @@ library = env.SharedLibrary(
 env.Depends(library, libsodium)
 env.Depends(library, datatypes)
 
-copy_demo = env.InstallAs('demo/bin', 'extension')
+copy_demo = env.InstallAs(f'{projectdir}/bin', 'extension')
 default_args = [library, copy_demo]
 
 if os.path.exists('gut'):
-    copy_gut = env.InstallAs('demo/addons', 'gut/addons')
+    copy_gut = env.InstallAs(f'{projectdir}/addons', 'gut/addons')
     default_args.append(copy_gut)
 
 if localEnv.get("compiledb", False):

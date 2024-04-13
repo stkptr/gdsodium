@@ -3,7 +3,7 @@ FROM gdsodium-linux-cross:latest AS build
 COPY godot-cpp /extension/godot-cpp
 COPY libsodium /extension/libsodium
 COPY src /extension/src
-COPY *SConstruct /extension/
+COPY *SConstruct register* /extension/
 
 COPY docker-build/cc.sh /usr/local/bin
 COPY docker-build/output.sh /usr/local/bin
