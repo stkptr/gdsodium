@@ -18,6 +18,13 @@ instead, you can add GDSodium to your custom Godot's modules directory. It's
 recommended that you add GDSodium as a submodule pegged to a specific release.
 Once added, GDSodium will automatically compile when you compile the engine.
 
+When exporting using a template which has the module built in (like for web)
+from a Godot project which has the extension as well Godot will (and should)
+give an error that it cannot find a suitable library file for the platform.
+The error shouldn't prevent the export from working. If no error is returned
+then the extension has been included with the export. In the case of web this
+will usually result in some platforms failing to run the export.
+
 By using GDSodium you must agree to some licenses. GDSodium itself is public
 domain, but libsodium and GDExtension both have credit requirements.
 **You must** include the licenses for [godot-cpp][gdcpp-license] and
