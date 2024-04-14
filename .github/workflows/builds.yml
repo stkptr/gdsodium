@@ -102,6 +102,11 @@ jobs:
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' ${{ matrix.compile_args }}
 
+      - name: (Debug) Find coverage files
+        shell: sh
+        run: |
+          find . -name '*.gcov' -o -name '*.gcda' -o -name '*.gcno'
+
       - name: Run tests (Linux debug)
         if: ${{ matrix.platform == 'linux' && matrix.target == 'template_debug' }}
         uses: croconut/godot-tester@v5
