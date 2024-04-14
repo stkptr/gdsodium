@@ -114,6 +114,11 @@ jobs:
           version: "4.2.1"
           path: "demo"
 
+      - name: (Debug) Find coverage files after tests
+        shell: sh
+        run: |
+          find . -name '*.gcov' -o -name '*.gcda' -o -name '*.gcno'
+
       - name: Run coverage and rebuild (Linux debug)
         if: ${{ matrix.platform == 'linux' && matrix.target == 'template_debug' }}
         shell: sh
