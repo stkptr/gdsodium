@@ -28,6 +28,13 @@ opts.Add(
     )
 )
 opts.Add(
+    BoolVariable(
+        key="coverage",
+        help="Include coverage information",
+        default=False,
+    )
+)
+opts.Add(
     PathVariable(
         key="compiledb_file",
         help="Path to a custom `compile_commands.json` file",
@@ -70,7 +77,16 @@ if env["platform"] == "macos":
 
 libraryfile = "extension/{}/{}".format(env["platform"], file)
 
-library = env.SharedLibrary(
+libenv = env.Clone()
+if env['coverage']:
+    libenv.Append(CCFLAGS=['-fprofile-arcs', '-ftest-coverage'])
+    libenv.Append(LDFLAGS=['--coverage'])
+    libenv.Append(LIBS=['gcov'])
+
+if GetOption('clean'):
+    env.Execute(['rm -f *.gcov src/*.gcov *.gcda src/*.gcda *.gcno src/*.gcno'])
+
+library = libenv.SharedLibrary(
     libraryfile,
     source=sources,
 )

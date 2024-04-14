@@ -56,7 +56,7 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::client_session_keys(
         client_keys->private_key.ptr(),
         server_public_key.ptr()
     ) != 0) {
-        return EMPTY(GDSodiumDirectionalKeys);
+        return EMPTY(GDSodiumDirectionalKeys); // GCOV_EXCL_LINE
     }
 
     return memnew(GDSodiumDirectionalKeys(receive, transmit));
@@ -87,7 +87,7 @@ Ref<GDSodiumDirectionalKeys> GDSodiumKeyExchange::server_session_keys(
         server_keys->private_key.ptr(),
         client_public_key.ptr()
     ) != 0) {
-        return EMPTY(GDSodiumDirectionalKeys);
+        return EMPTY(GDSodiumDirectionalKeys); // GCOV_EXCL_LINE
     }
 
     return memnew(GDSodiumDirectionalKeys(receive, transmit));

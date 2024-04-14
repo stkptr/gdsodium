@@ -6,7 +6,7 @@
 namespace gdsodium {
 
 class GDSodium : public Object {
-	GDCLASS(GDSodium, Object)
+	GDCLASS(GDSodium, Object) // GCOV_EXCL_LINE
 
 protected:
 	static void _bind_methods();

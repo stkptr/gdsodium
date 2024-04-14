@@ -36,17 +36,21 @@ void initialize(ModuleInitializationLevel p_level) {
     ClassDB::register_class<GDSodiumSign>();
 }
 
+#ifdef GDSODIUM_EXTENSION
 void initialize_gdsodium_types(ModuleInitializationLevel p_level) {
 	initialize(p_level);
 }
 
 void uninitialize_gdsodium_types(ModuleInitializationLevel p_level) {}
 
+#else // GCOV_EXCL_START
+
 void initialize_gdsodium_module(ModuleInitializationLevel p_level) {
 	initialize(p_level);
 }
 
 void uninitialize_gdsodium_module(ModuleInitializationLevel p_level) {}
+#endif // GCOV_EXCL_STOP
 
 #ifdef GDSODIUM_EXTENSION
 extern "C"

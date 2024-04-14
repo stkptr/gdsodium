@@ -7,7 +7,7 @@
 namespace gdsodium {
 
 class GDSodiumSign : public RefCounted {
-	GDCLASS(GDSodiumSign, RefCounted)
+	GDCLASS(GDSodiumSign, RefCounted) // GCOV_EXCL_LINE
 
     crypto_sign_state state;
     bool initialized = false;
@@ -16,8 +16,8 @@ protected:
 	static void _bind_methods();
 
 public:
-    GDSodiumSign() {}
-    ~GDSodiumSign() {}
+    GDSodiumSign() {} // GCOV_EXCL_LINE
+    ~GDSodiumSign() {} // GCOV_EXCL_LINE
 
     void start() {
         crypto_sign_init(&state);

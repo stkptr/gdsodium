@@ -4,6 +4,12 @@ experiment
 src/generated_datatypes.h
 demo/addons
 
+# Coverage testing
+coverage/
+*.gcda
+*.gcno
+*.gcov
+
 # Godot 4+ specific ignores
 demo/.godot/*
 !demo/.godot/extension_list.cfg

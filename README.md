@@ -65,13 +65,18 @@ will not be supported until that issue is fixed. It's a threading-related issue.
 Further, only `x86_64` and `arm64` Linux, `x86_64` Windows, `x86_64` and `arm64`
 Android, and web are tested.
 
-## Unit tests
+## Testing
 
 GDSodium uses [GUT] for unit testing. Almost all tests are parameterized,
 running on 10 static cases and 10 runtime cases. Before running the tests you
 need to run SCons. See the compiling section for more info. To generate the
 static test cases use `./run_tests.sh generate`. To run the tests use
 `./run_tests.sh`.
+
+There is also support for coverage testing. To use it compile with
+`scons coverage=yes` then run tests. `gcovr` and similar can be used, or the
+convenience script `coverage.sh` can be used to generate summaries with per-file
+coverage information.
 
 ## Compiling
 

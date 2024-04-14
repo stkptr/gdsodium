@@ -6,14 +6,14 @@
 namespace gdsodium {
 
 class GDSodiumKeyExchange : public Object {
-	GDCLASS(GDSodiumKeyExchange, Object)
+	GDCLASS(GDSodiumKeyExchange, Object) // GCOV_EXCL_LINE
 
 protected:
 	static void _bind_methods();
 
 public:
-    GDSodiumKeyExchange() {}
-    ~GDSodiumKeyExchange() {}
+    GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
+    ~GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
 
     static Ref<GDSodiumKeyPair> generate_keypair(
         const Bytes &seed

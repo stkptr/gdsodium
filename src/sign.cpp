@@ -55,7 +55,7 @@ Bytes GDSodiumSign::private_key_to_seed(
     if (crypto_sign_ed25519_sk_to_seed(
         seed.ptrw(), private_key.ptr()
     ) != 0) {
-        return Bytes();
+        return Bytes(); // GCOV_EXCL_LINE
     }
 
     return seed;
@@ -75,7 +75,7 @@ Bytes GDSodiumSign::private_key_to_public_key(
     if (crypto_sign_ed25519_sk_to_pk(
         public_key.ptrw(), private_key.ptr()
     ) != 0) {
-        return Bytes();
+        return Bytes(); // GCOV_EXCL_LINE
     }
 
     return public_key;
@@ -98,7 +98,7 @@ Bytes GDSodiumSign::sign(
         message.ptr(), message.size(),
         private_key.ptr()
     ) != 0) {
-        return Bytes();
+        return Bytes(); // GCOV_EXCL_LINE
     }
 
     return out;
@@ -121,7 +121,7 @@ Bytes GDSodiumSign::sign_detached(
         message.ptr(), message.size(),
         private_key.ptr()
     ) != 0) {
-        return Bytes();
+        return Bytes(); // GCOV_EXCL_LINE
     }
 
     return signature;
@@ -144,7 +144,7 @@ Ref<GDSodiumValidatedMessage> GDSodiumSign::open(
         signed_message.ptr(), signed_message.size(),
         public_key.ptr()
     ) != 0) {
-        return EMPTY(GDSodiumValidatedMessage);
+        return EMPTY(GDSodiumValidatedMessage); // GCOV_EXCL_LINE
     }
 
     return memnew(GDSodiumValidatedMessage(message, true));
@@ -200,7 +200,7 @@ Bytes GDSodiumSign::final_sign(
         signature.ptrw(), NULL,
         private_key.ptr()
     ) != 0) {
-        return Bytes();
+        return Bytes(); // GCOV_EXCL_LINE
     }
 
     return signature;

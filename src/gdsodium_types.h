@@ -6,9 +6,9 @@
 namespace gdsodium {
 
 class GDSodiumType : public RefCounted {
-	GDCLASS(GDSodiumType, RefCounted)
+	GDCLASS(GDSodiumType, RefCounted) // GCOV_EXCL_LINE
 protected:
-	static void _bind_methods() {}
+	static void _bind_methods() {} // GCOV_EXCL_LINE
 };
 
 #include "generated_datatypes.h"

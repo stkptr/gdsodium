@@ -58,11 +58,11 @@ Ref<GDSodiumTaggedMessage> GDSodium::chacha20_poly1305_ietf_encrypt_detached(
         NULL, nonce.ptr(),
         key.ptr()
     ) != 0) {
-        return EMPTY(GDSodiumTaggedMessage);
+        return EMPTY(GDSodiumTaggedMessage); // GCOV_EXCL_LINE
     }
     
     if (mlen != 16) {
-        return EMPTY(GDSodiumTaggedMessage);
+        return EMPTY(GDSodiumTaggedMessage); // GCOV_EXCL_LINE
     }
 
     return memnew(GDSodiumTaggedMessage(ciphertext, mac));
@@ -91,7 +91,7 @@ Ref<GDSodiumValidatedMessage> GDSodium::chacha20_poly1305_ietf_decrypt_detached(
         nonce.ptr(),
         key.ptr()
     ) != 0) {
-        return EMPTY(GDSodiumValidatedMessage);
+        return EMPTY(GDSodiumValidatedMessage); // GCOV_EXCL_LINE
     }
 
     return memnew(GDSodiumValidatedMessage(plaintext, true));
@@ -119,7 +119,7 @@ PackedByteArray GDSodium::argon2id_hash(
         operations, memory,
         crypto_pwhash_ALG_ARGON2ID13
     ) != 0) {
-        return PackedByteArray();
+        return PackedByteArray(); // GCOV_EXCL_LINE
     }
 
     return out;

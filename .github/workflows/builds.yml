@@ -51,6 +51,7 @@ jobs:
             runner: ubuntu-20.04
             target: template_debug
             platform: linux
+            compile_args: coverage=yes
             arch: x86_64
           - identifier: linux-release
             os: ubuntu-latest
@@ -103,6 +104,15 @@ jobs:
         with:
           version: "4.2.1"
           path: "demo"
+
+      - name: Run coverage and rebuild (Linux debug)
+        if: ${{ matrix.platform == 'linux' && matrix.target == 'template_debug' }}
+        shell: sh
+        run: |
+          bash coverage.sh
+          mv coverage/ extension/
+          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
