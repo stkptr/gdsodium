@@ -21,19 +21,19 @@ using namespace gdsodium;
 
 void initialize(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE
-	    || sodium_init() < 0
-	    || ClassDB::class_exists("GDSodium")
+		|| sodium_init() < 0
+		|| ClassDB::class_exists("GDSodium")
 	) {
 		return;
 	}
-    ClassDB::register_class<GDSodium>();
-    ClassDB::register_abstract_class<GDSodiumType>();
-    ClassDB::register_class<GDSodiumKeyPair>();
-    ClassDB::register_class<GDSodiumTaggedMessage>();
-    ClassDB::register_class<GDSodiumValidatedMessage>();
-    ClassDB::register_class<GDSodiumDirectionalKeys>();
-    ClassDB::register_class<GDSodiumKeyExchange>();
-    ClassDB::register_class<GDSodiumSign>();
+	ClassDB::register_class<GDSodium>();
+	ClassDB::register_abstract_class<GDSodiumType>();
+	ClassDB::register_class<GDSodiumKeyPair>();
+	ClassDB::register_class<GDSodiumTaggedMessage>();
+	ClassDB::register_class<GDSodiumValidatedMessage>();
+	ClassDB::register_class<GDSodiumDirectionalKeys>();
+	ClassDB::register_class<GDSodiumKeyExchange>();
+	ClassDB::register_class<GDSodiumSign>();
 }
 
 #ifdef GDSODIUM_EXTENSION
@@ -55,24 +55,24 @@ void uninitialize_gdsodium_module(ModuleInitializationLevel p_level) {}
 #ifdef GDSODIUM_EXTENSION
 extern "C"
 {
-    // Initialization
-    GDExtensionBool GDE_EXPORT gdsodium_init(
-        GDExtensionInterfaceGetProcAddress p_get_proc_address,
-        GDExtensionClassLibraryPtr p_library,
-        GDExtensionInitialization *r_initialization
-    ) {
-	    GDExtensionBinding::InitObject init_obj(
-	        p_get_proc_address,
-	        p_library,
-	        r_initialization
-	    );
-	    init_obj.register_initializer(initialize_gdsodium_types);
-	    init_obj.register_terminator(uninitialize_gdsodium_types);
-	    init_obj.set_minimum_library_initialization_level(
-	        MODULE_INITIALIZATION_LEVEL_SCENE
-	    );
+	// Initialization
+	GDExtensionBool GDE_EXPORT gdsodium_init(
+		GDExtensionInterfaceGetProcAddress p_get_proc_address,
+		GDExtensionClassLibraryPtr p_library,
+		GDExtensionInitialization *r_initialization
+	) {
+		GDExtensionBinding::InitObject init_obj(
+			p_get_proc_address,
+			p_library,
+			r_initialization
+		);
+		init_obj.register_initializer(initialize_gdsodium_types);
+		init_obj.register_terminator(uninitialize_gdsodium_types);
+		init_obj.set_minimum_library_initialization_level(
+			MODULE_INITIALIZATION_LEVEL_SCENE
+		);
 
-	    return init_obj.init();
-    }
+		return init_obj.init();
+	}
 }
 #endif

@@ -5,38 +5,38 @@ from collections import namedtuple
 
 DataClass = namedtuple('DataClass', 'name inherit members')
 TypedName = namedtuple(
-    'TypedName',
-    'type variant parameter_type default_value name'
+	'TypedName',
+	'type variant parameter_type default_value name'
 )
 
 
 bind_template = '''
 static void _bind_methods() {{
-    ClassDB::bind_static_method(
-        "{class_name}",
-        D_METHOD("create",
+	ClassDB::bind_static_method(
+		"{class_name}",
+		D_METHOD("create",
 {property_names}
-        ),
-        &{class_name}::create
-    );
-    {property_binds}
+		),
+		&{class_name}::create
+	);
+	{property_binds}
 }}
 '''
 
 
 bind_property_template = '''
 ClassDB::bind_method(
-    D_METHOD("get_{property_name}"),
-    &{class_name}::get_{property_name}
+	D_METHOD("get_{property_name}"),
+	&{class_name}::get_{property_name}
 );
 ClassDB::bind_method(
-    D_METHOD("set_{property_name}"),
-    &{class_name}::set_{property_name}
+	D_METHOD("set_{property_name}"),
+	&{class_name}::set_{property_name}
 );
 ADD_PROPERTY(
-    PropertyInfo({property_variant}, "{property_name}"),
-    "set_{property_name}",
-    "get_{property_name}"
+	PropertyInfo({property_variant}, "{property_name}"),
+	"set_{property_name}",
+	"get_{property_name}"
 );
 '''
 
@@ -54,24 +54,24 @@ constructor_template = '''
 static {class_name}* create(
 {property_params}
 ) {{
-    return memnew({class_name}(
+	return memnew({class_name}(
 {param_names}
-    ));
+	));
 }}
 '''
 
 setter_template = '''
 void set_{property_name}({property_parameter_type} new_{property_name}) {{
-    {property_name} = new_{property_name};
+	{property_name} = new_{property_name};
 }}
 {property_return_type} get_{property_name}() const {{
-    return {property_name};
+	return {property_name};
 }}
 '''
 
 class_template = '''
 class {class_name} : public {inherit} {{
-    GDCLASS({class_name}, {inherit})
+	GDCLASS({class_name}, {inherit})
 
 protected:
 {binds}
@@ -106,24 +106,24 @@ def get_type(t):
     return type_map[t]
 
 
-def indent_n(t, level, indentation='    '):
+def indent_n(t, level, indentation='\t'):
     return '\n'.join([
         indentation * level + s
         for s in t.strip().split('\n')
     ])
 
 
-def indent(a, b=None, indentation='    '):
+def indent(a, b=None, indentation='\t'):
     if b is None:
         return indent_n(a, 1, indentation)
     return indent_n(b, a, indentation)
 
 
-def transform(definitions):
+def transform(definitions, parent):
     return [
         DataClass(
             class_name,
-            'GDSodiumType',
+            parent,
             [TypedName(*get_type(type), name) for name, type in members.items()]
         ) for class_name, members in definitions.items()
     ]
@@ -187,12 +187,13 @@ def generate(definitions):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('definitions')
+    parser.add_argument('--parent', default='GDSodiumType')
     args = parser.parse_args()
 
     with open(args.definitions) as f:
         definitions = json.load(f)
 
-    print(generate(transform(definitions)))
+    print(generate(transform(definitions, args.parent)))
 
 
 if __name__ == '__main__':

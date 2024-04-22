@@ -12,22 +12,22 @@ protected:
 	static void _bind_methods();
 
 public:
-    GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
-    ~GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
+	GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
+	~GDSodiumKeyExchange() {} // GCOV_EXCL_LINE
 
-    static Ref<GDSodiumKeyPair> generate_keypair(
-        const Bytes &seed
-    );
+	static Ref<GDSodiumKeyPair> generate_keypair(
+		const Bytes &seed
+	);
 
-    static Ref<GDSodiumDirectionalKeys> client_session_keys(
-        Ref<GDSodiumKeyPair> client_keys,
-        const Bytes &server_public_key
-    );
+	static Ref<GDSodiumDirectionalKeys> client_session_keys(
+		Ref<GDSodiumKeyPair> client_keys,
+		const Bytes &server_public_key
+	);
 
-    static Ref<GDSodiumDirectionalKeys> server_session_keys(
-        Ref<GDSodiumKeyPair> server_keys,
-        const Bytes &client_public_key
-    );
+	static Ref<GDSodiumDirectionalKeys> server_session_keys(
+		Ref<GDSodiumKeyPair> server_keys,
+		const Bytes &client_public_key
+	);
 };
 
 }

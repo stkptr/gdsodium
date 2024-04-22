@@ -68,6 +68,7 @@ env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp") + Glob("*.cpp")
+headers = Glob("src/*.h") + Glob("*.h")
 
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
 
@@ -93,6 +94,7 @@ library = libenv.SharedLibrary(
 
 env.Depends(library, libsodium)
 env.Depends(library, datatypes)
+env.Depends(library, headers)
 
 copy_demo = env.InstallAs(f'{projectdir}/bin', 'extension')
 default_args = [library, copy_demo]
