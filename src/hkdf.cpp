@@ -3,11 +3,21 @@
 
 using namespace gdsodium;
 
-void _bind_methods();
+void GDSodiumHKDF::_bind_methods() {
+	BIND_STATIC(GDSodiumHKDF, generate_key);
+	BIND_STATIC(GDSodiumHKDF, create);
+	BIND_STATIC(GDSodiumHKDF, extract_init);
+	BIND_METHOD(GDSodiumHKDF, update,
+		"ikm");
+	BIND_METHOD(GDSodiumHKDF, finalize);
+	BIND_STATIC(GDSodiumHKDF, extract,
+		"salt", "ikm");
+	BIND_STATIC(GDSodiumHKDF, expand,
+		"key", "context", "amount");
+	BIND_CONSTANT_AS(crypto_kdf_hkdf_sha256_KEYBYTES, "KEY_BYTES");
+}
 
-Bytes GDSodiumHKDF::generate_key(
-	const Bytes &seed
-) {
+Bytes GDSodiumHKDF::generate_key() {
     Bytes prk{};
     prk.resize(crypto_kdf_hkdf_sha256_KEYBYTES);
     crypto_kdf_hkdf_sha256_keygen(prk.ptrw());

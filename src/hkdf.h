@@ -35,9 +35,7 @@ public:
 	    return extract_init();
 	}
 
-	static Bytes generate_key(
-		const Bytes &seed
-	);
+	static Bytes generate_key();
 
     bool update(
         const Bytes &ikm

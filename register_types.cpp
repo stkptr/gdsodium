@@ -15,6 +15,7 @@
 #include "src/gdsodium_types.h"
 #include "src/key_exchange.h"
 #include "src/sign.h"
+#include "src/hkdf.h"
 
 using namespace godot;
 using namespace gdsodium;
@@ -34,6 +35,7 @@ void initialize(ModuleInitializationLevel p_level) {
 	ClassDB::register_class<GDSodiumDirectionalKeys>();
 	ClassDB::register_class<GDSodiumKeyExchange>();
 	ClassDB::register_class<GDSodiumSign>();
+	ClassDB::register_class<GDSodiumHKDF>();
 }
 
 #ifdef GDSODIUM_EXTENSION
