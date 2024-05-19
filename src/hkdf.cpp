@@ -15,6 +15,7 @@ void GDSodiumHKDF::_bind_methods() {
 	BIND_STATIC(GDSodiumHKDF, expand,
 		"key", "context", "amount");
 	BIND_CONSTANT_AS(crypto_kdf_hkdf_sha256_KEYBYTES, "KEY_BYTES");
+	BIND_CONSTANT_AS(crypto_kdf_hkdf_sha256_BYTES_MAX, "MAX_OUTPUT");
 }
 
 Bytes GDSodiumHKDF::generate_key() {
@@ -70,7 +71,8 @@ Bytes GDSodiumHKDF::expand(
     const Bytes &context,
     unsigned int amount
 ) {
-    if (amount > crypto_kdf_hkdf_sha256_BYTES_MAX) {
+    if (key.size() != crypto_kdf_hkdf_sha256_KEYBYTES
+        || amount > crypto_kdf_hkdf_sha256_BYTES_MAX) {
         return Bytes();
     }
 
