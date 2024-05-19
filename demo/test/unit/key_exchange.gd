@@ -7,13 +7,13 @@ func test_generate():
 	assert_not_empty(GDSodiumKeyExchange.generate_keypair())
 
 func test_generate_seeds(case=use_parameters(cases)):
-	var run = func(seed, private, public):
-		var kp = GDSodiumKeyExchange.generate_keypair(seed)
+	var run = func(cseed, private, public):
+		var kp = GDSodiumKeyExchange.generate_keypair(cseed)
 		assert_eq(kp.private_key, private)
 		assert_eq(kp.public_key, public)
 		assert_incorrect_length(
 			func(a): return GDSodiumKeyExchange.generate_keypair(a),
-			seed
+			cseed
 		)
 	run.call(case.client_seed, case.client_private, case.client_public)
 	run.call(case.server_seed, case.server_private, case.server_public)

@@ -82,7 +82,7 @@ func test_open(case=use_parameters(cases)):
 	})
 
 func test_sign_multipart(case=use_parameters(cases)):
-	var sign = func(d):
+	var fsign = func(d):
 		var signer = GDSodiumSign.create()
 		signer.update(d.msg)
 		signer.update(d.msg2)
@@ -92,8 +92,8 @@ func test_sign_multipart(case=use_parameters(cases)):
 		msg2 = case.message2,
 		priv = case.private_key
 	}
-	assert_true(sign.call(args))
-	assert_many_false(sign, args)
+	assert_true(fsign.call(args))
+	assert_many_false(fsign, args)
 
 func test_verify_multipart(case=use_parameters(cases)):
 	var verify = func(d):
