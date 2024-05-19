@@ -3,13 +3,15 @@ class_name UnitTest
 
 var Case
 var filename
+var fixed_filename
 
 var cases
 
-func _init(_Case, _filename):
+func _init(_Case, _filename, _fixed_filename=null):
 	super()
 	Case = _Case
 	filename = _filename
+	fixed_filename = _fixed_filename
 	var static_cases = []
 	if FileAccess.file_exists(filename):
 		static_cases = JSON.parse_string(
@@ -19,6 +21,11 @@ func _init(_Case, _filename):
 			+ " Ignore this warning if generating static cases.")
 			% filename
 		)
+	if fixed_filename and FileAccess.file_exists(fixed_filename):
+		static_cases.append_array(JSON.parse_string(
+			FileAccess.get_file_as_string(fixed_filename)))
+	elif fixed_filename:
+		push_error("Fixed case file '%s' not found" % fixed_filename)
 	var random_cases = generate_cases(10)
 	cases = static_cases.map(Case.new) + random_cases
 
@@ -38,19 +45,21 @@ static func is_empty(e):
 	return true
 
 func assert_empty(e, msg=''):
-	assert_true(is_empty(e), msg)
+	assert_true(UnitTest.is_empty(e), msg)
 
 func assert_not_empty(e, msg=''):
-	assert_false(is_empty(e), msg)
+	assert_false(UnitTest.is_empty(e), msg)
 
 func assert_incorrect_length(f, v: PackedByteArray, msg=''):
-	var p = v.slice(v.size() / 2)
+	# warning supression
+	var p = v.slice(int(float(v.size()) / 2))
 	assert_empty(f.call(p), msg)
 	p.append_array(v)
 	assert_empty(f.call(p), msg)
 
 func assert_ilen_ne(f, v: PackedByteArray, t, msg=''):
-	var p = v.slice(v.size() / 2)
+	# warning supression
+	var p = v.slice(int(float(v.size()) / 2))
 	assert_ne(f.call(p), t, msg)
 	p.append_array(v)
 	assert_ne(f.call(p), t, msg)
@@ -88,19 +97,39 @@ class BaseCase:
 				hit_valid = true
 		return properties
 
+	func encode(d):
+		if d is PackedByteArray:
+			return Marshalls.raw_to_base64(d)
+		return d
+
+	func decode(d):
+		if not d is String:
+			return d
+		var base = '32'
+		var bases = {
+			'32': func(s): return Marshalls.base64_to_raw(s),
+			'0x': func(s): return s.hex_decode(),
+			'a': func(s): return s,
+		}
+		var groups = d.split('~', true, 1)
+		var data = groups[0]
+		if len(groups) == 2:
+			base = groups[0]
+			data = groups[1]
+		return bases[base].call(data)
+
 	func _init(d={}, rng=null):
 		test_rand_object = rng
 		var properties = get_custom_properties()
 		for p in properties:
 			var source = d.get(p['name'])
-			set(p['name'],
-				Marshalls.base64_to_raw(source) if source is String else source)
+			set(p['name'], decode(source))
 
 	func dump() -> Dictionary:
 		var properties = get_custom_properties()
 		var d = {}
 		for p in properties:
-			d[p['name']] = Marshalls.raw_to_base64(get(p['name']))
+			d[p['name']] = encode(get(p['name']))
 		return d
 
 	func initialize_rand():
