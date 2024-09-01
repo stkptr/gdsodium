@@ -14,14 +14,6 @@ protected:
 public:
 	GDSodium();
 	~GDSodium();
-
-	static Bytes argon2id_hash(
-		const Bytes &secret,
-		const Bytes &salt,
-		uint64_t operations,
-		uint64_t memory,
-		uint32_t output_size
-	);
 };
 
 }

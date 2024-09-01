@@ -37,7 +37,7 @@ func _on_hash_pressed():
 	var memory = int($Widgets/Memory/Value.value)
 	memory *= current_unit()
 	var output_size = int($Widgets/OutputSize/Value.value)
-	var hashed = GDSodium.argon2id_hash(
+	var hashed = GDSodiumKeyDerivation.argon2id(
 		password, salt,
 		iterations, memory,
 		output_size

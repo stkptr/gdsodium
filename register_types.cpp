@@ -17,6 +17,7 @@
 #include "src/sign.h"
 #include "src/hkdf.h"
 #include "src/aead.h"
+#include "src/key_derivation.h"
 
 using namespace godot;
 using namespace gdsodium;
@@ -38,6 +39,7 @@ void initialize(ModuleInitializationLevel p_level) {
 	ClassDB::register_class<GDSodiumSign>();
 	ClassDB::register_class<GDSodiumHKDF>();
 	ClassDB::register_class<GDSodiumAEAD>();
+	ClassDB::register_class<GDSodiumKeyDerivation>();
 }
 
 #ifdef GDSODIUM_EXTENSION
