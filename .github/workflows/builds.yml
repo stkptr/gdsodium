@@ -106,7 +106,7 @@ jobs:
         if: ${{ matrix.platform == 'linux' && matrix.target == 'template_debug' }}
         uses: croconut/godot-tester@v5
         with:
-          version: "4.2.1"
+          version: "4.3"
           path: "demo"
 
       - name: Run coverage and rebuild (Linux debug)
